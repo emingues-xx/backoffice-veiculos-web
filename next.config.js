@@ -12,10 +12,10 @@ const nextConfig = {
     ignoreBuildErrors: process.env.NODE_ENV === 'production',
   },
   env: {
-    BFF_BASE_URL: process.env.BFF_BASE_URL || 'http://localhost:3002',
+    BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'http://localhost:3002',
   },
   async rewrites() {
-    const bffBaseUrl = process.env.BFF_BASE_URL || 'http://localhost:3002';
+    const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL || 'http://localhost:3002';
 
     return [
       {
