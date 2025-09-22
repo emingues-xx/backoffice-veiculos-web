@@ -1,14 +1,52 @@
 {
   "name": "backoffice-veiculos-web",
   "version": "1.0.0",
-  "description": "E-commerce de Veículos - backoffice-veiculos-web",
-  "main": "index.js",
+  "description": "E-commerce de Veículos - Backoffice Web Application",
+  "private": true,
   "scripts": {
-    "dev": "echo 'Configure dev script'",
-    "build": "echo 'Configure build script'",
-    "test": "echo 'Configure test script'"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "type-check": "tsc --noEmit",
+    "railway:deploy": "railway up",
+    "railway:logs": "railway logs",
+    "railway:status": "railway status"
   },
-  "keywords": ["ecommerce", "veiculos"],
-  "author": "",
-  "license": "ISC"
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "typescript": "^5.0.0",
+    "tailwindcss": "^3.3.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "@headlessui/react": "^1.7.0",
+    "@heroicons/react": "^2.0.0",
+    "axios": "^1.6.0",
+    "react-hook-form": "^7.47.0",
+    "react-query": "^3.39.0",
+    "date-fns": "^2.30.0",
+    "recharts": "^2.8.0",
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.292.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  },
+  "keywords": [
+    "ecommerce",
+    "veiculos",
+    "backoffice",
+    "nextjs",
+    "react"
+  ],
+  "author": "Squad Backoffice",
+  "license": "MIT"
 }
