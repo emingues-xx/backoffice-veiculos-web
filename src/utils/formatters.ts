@@ -37,13 +37,13 @@ export const formatRelativeTime = (date: string | Date): string => {
 
 export const getStatusColor = (status: string): string => {
   switch (status) {
-    case 'ativo':
+    case 'active':
       return 'bg-green-100 text-green-800';
-    case 'inativo':
+    case 'inactive':
       return 'bg-gray-100 text-gray-800';
-    case 'vendido':
+    case 'sold':
       return 'bg-blue-100 text-blue-800';
-    case 'reservado':
+    case 'reserved':
       return 'bg-yellow-100 text-yellow-800';
     default:
       return 'bg-gray-100 text-gray-800';
@@ -52,53 +52,53 @@ export const getStatusColor = (status: string): string => {
 
 export const getStatusLabel = (status: string): string => {
   switch (status) {
-    case 'ativo':
+    case 'active':
       return 'Ativo';
-    case 'inativo':
+    case 'inactive':
       return 'Inativo';
-    case 'vendido':
+    case 'sold':
       return 'Vendido';
-    case 'reservado':
+    case 'reserved':
       return 'Reservado';
     default:
       return status;
   }
 };
 
-export const getCombustivelLabel = (combustivel: string): string => {
-  switch (combustivel) {
-    case 'gasolina':
+export const getFuelLabel = (fuel: string): string => {
+  switch (fuel) {
+    case 'gasoline':
       return 'Gasolina';
-    case 'etanol':
+    case 'ethanol':
       return 'Etanol';
     case 'flex':
       return 'Flex';
     case 'diesel':
       return 'Diesel';
-    case 'eletrico':
+    case 'electric':
       return 'Elétrico';
-    case 'hibrido':
+    case 'hybrid':
       return 'Híbrido';
     default:
-      return combustivel;
+      return fuel;
   }
 };
 
-export const getCambioLabel = (cambio: string): string => {
-  switch (cambio) {
+export const getTransmissionLabel = (transmission: string): string => {
+  switch (transmission) {
     case 'manual':
       return 'Manual';
-    case 'automatico':
+    case 'automatic':
       return 'Automático';
     case 'cvt':
       return 'CVT';
     default:
-      return cambio;
+      return transmission;
   }
 };
 
-export const getCategoriaLabel = (categoria: string): string => {
-  switch (categoria) {
+export const getCategoryLabel = (category: string): string => {
+  switch (category) {
     case 'hatch':
       return 'Hatch';
     case 'sedan':
@@ -107,11 +107,11 @@ export const getCategoriaLabel = (categoria: string): string => {
       return 'SUV';
     case 'pickup':
       return 'Pickup';
-    case 'caminhao':
+    case 'truck':
       return 'Caminhão';
-    case 'moto':
+    case 'motorcycle':
       return 'Moto';
     default:
-      return categoria;
+      return category;
   }
 };

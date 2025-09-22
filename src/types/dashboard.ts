@@ -1,49 +1,49 @@
 export interface DashboardMetrics {
-  totalVeiculos: number;
-  veiculosAtivos: number;
-  veiculosVendidos: number;
-  vendasMes: number;
-  receitaMes: number;
-  receitaTotal: number;
-  veiculosPorCategoria: {
-    categoria: string;
-    quantidade: number;
+  totalVehicles: number;
+  activeVehicles: number;
+  soldVehicles: number;
+  monthlySales: number;
+  monthlyRevenue: number;
+  totalRevenue: number;
+  vehiclesByCategory: {
+    category: string;
+    quantity: number;
   }[];
-  vendasPorMes: {
-    mes: string;
-    vendas: number;
-    receita: number;
+  salesByMonth: {
+    month: string;
+    sales: number;
+    revenue: number;
   }[];
-  topMarcas: {
-    marca: string;
-    quantidade: number;
-    vendas: number;
+  topBrands: {
+    brand: string;
+    quantity: number;
+    sales: number;
   }[];
 }
 
-export interface Venda {
+export interface Sale {
   id: string;
-  veiculoId: string;
-  veiculo: {
-    marca: string;
-    modelo: string;
-    ano: number;
+  vehicleId: string;
+  vehicle: {
+    brand: string;
+    model: string;
+    year: number;
   };
-  preco: number;
-  dataVenda: string;
-  comprador: {
-    nome: string;
+  price: number;
+  saleDate: string;
+  buyer: {
+    name: string;
     email: string;
-    telefone: string;
+    phone: string;
   };
-  vendedor: {
+  seller: {
     id: string;
-    nome: string;
+    name: string;
   };
 }
 
-export interface VendasResponse {
-  vendas: Venda[];
+export interface SalesResponse {
+  sales: Sale[];
   total: number;
   page: number;
   limit: number;

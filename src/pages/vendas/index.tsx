@@ -1,8 +1,8 @@
-import { useVendas } from '@/hooks/useDashboard';
+import { useSales } from '@/hooks/useDashboard';
 import { formatCurrency, formatDate } from '@/utils/formatters';
 
-export default function VendasPage() {
-  const { data: vendasData, isLoading, error } = useVendas({ limit: 50 });
+export default function SalesPage() {
+  const { data: salesData, isLoading, error } = useSales({ limit: 50 });
 
   if (isLoading) {
     return (
@@ -64,39 +64,36 @@ export default function VendasPage() {
         </p>
       </div>
 
-      {/* Vendas List */}
-      {vendasData && vendasData.vendas.length > 0 ? (
+      {/* Sales List */}
+      {salesData && salesData.sales.length > 0 ? (
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <ul className="divide-y divide-gray-200">
-            {vendasData.vendas.map((venda) => (
-              <li key={venda.id}>
+            {salesData.sales.map((sale) => (
+              <li key={sale.id}>
                 <div className="px-4 py-4 flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center">
-                        <span className="text-primary-600 font-medium text-sm">
-                          {venda.veiculo.marca.charAt(0)}
+                      <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span className="text-blue-600 font-medium text-sm">
+                          {sale.vehicle.brand.charAt(0)}
                         </span>
                       </div>
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900">
-                        {venda.veiculo.marca} {venda.veiculo.modelo} ({venda.veiculo.ano})
+                        {sale.vehicle.brand} {sale.vehicle.model} ({sale.vehicle.year})
                       </div>
                       <div className="text-sm text-gray-500">
-                        Comprador: {venda.comprador.nome} • {venda.comprador.email}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        Vendedor: {venda.vendedor.nome}
+                        Comprador: {sale.buyer.name} • Vendedor: {sale.seller.name}
                       </div>
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-medium text-gray-900">
-                      {formatCurrency(venda.preco)}
+                      {formatCurrency(sale.price)}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {formatDate(venda.dataVenda)}
+                      {formatDate(sale.saleDate)}
                     </div>
                   </div>
                 </div>
@@ -106,10 +103,9 @@ export default function VendasPage() {
         </div>
       ) : (
         <div className="text-center py-12">
-          <div className="text-gray-400 text-6xl mb-4">💰</div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Nenhuma venda encontrada</h3>
-          <p className="text-gray-500">
-            As vendas aparecerão aqui quando forem realizadas.
+          <p className="text-gray-500 text-lg">Nenhuma venda encontrada</p>
+          <p className="text-gray-400 mt-2">
+            As vendas aparecerão aqui quando forem registradas
           </p>
         </div>
       )}

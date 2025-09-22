@@ -48,10 +48,6 @@ export const Dashboard: React.FC = () => {
     );
   }
 
-  if (!metrics) {
-    return null;
-  }
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -66,25 +62,25 @@ export const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Total de Veículos"
-          value={formatNumber(metrics.totalVeiculos)}
+          value={formatNumber(metrics.totalVehicles)}
           icon={TruckIcon}
           color="blue"
         />
         <MetricCard
           title="Veículos Ativos"
-          value={formatNumber(metrics.veiculosAtivos)}
+          value={formatNumber(metrics.activeVehicles)}
           icon={CheckCircleIcon}
           color="green"
         />
         <MetricCard
           title="Vendas do Mês"
-          value={formatNumber(metrics.vendasMes)}
+          value={formatNumber(metrics.monthlySales)}
           icon={ChartBarIcon}
           color="yellow"
         />
         <MetricCard
           title="Receita do Mês"
-          value={formatCurrency(metrics.receitaMes)}
+          value={formatCurrency(metrics.monthlyRevenue)}
           icon={CurrencyDollarIcon}
           color="purple"
         />
@@ -92,55 +88,48 @@ export const Dashboard: React.FC = () => {
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Vendas por Mês */}
+        {/* Sales by Month */}
         <ChartCard title="Vendas por Mês">
           <SimpleLineChart
-            data={metrics.vendasPorMes.map(item => ({
-              name: item.mes,
-              value: item.vendas,
+            data={metrics.salesByMonth.map(item => ({
+              name: item.month,
+              value: item.sales,
             }))}
-            dataKey="value"
-            color="#3b82f6"
           />
         </ChartCard>
 
-        {/* Veículos por Categoria */}
+        {/* Vehicles by Category */}
         <ChartCard title="Veículos por Categoria">
           <SimplePieChart
-            data={metrics.veiculosPorCategoria.map((item, index) => ({
-              name: item.categoria,
-              value: item.quantidade,
-              color: ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'][index % 6],
+            data={metrics.vehiclesByCategory.map(item => ({
+              name: item.category,
+              value: item.quantity,
             }))}
           />
         </ChartCard>
       </div>
 
-      {/* Top Marcas */}
-      <ChartCard title="Top Marcas" className="lg:col-span-2">
-        <SimpleBarChart
-          data={metrics.topMarcas.map(item => ({
-            name: item.marca,
-            value: item.quantidade,
-          }))}
-          dataKey="value"
-          color="#10b981"
-        />
-      </ChartCard>
+      {/* Additional Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Revenue by Month */}
+        <ChartCard title="Receita por Mês">
+          <SimpleBarChart
+            data={metrics.salesByMonth.map(item => ({
+              name: item.month,
+              value: item.revenue,
+            }))}
+          />
+        </ChartCard>
 
-      {/* Additional Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Receita Total</h3>
-          <p className="text-3xl font-bold text-gray-900">{formatCurrency(metrics.receitaTotal)}</p>
-          <p className="text-sm text-gray-500 mt-1">Receita acumulada de todas as vendas</p>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Veículos Vendidos</h3>
-          <p className="text-3xl font-bold text-gray-900">{formatNumber(metrics.veiculosVendidos)}</p>
-          <p className="text-sm text-gray-500 mt-1">Total de veículos vendidos</p>
-        </div>
+        {/* Top Brands */}
+        <ChartCard title="Top Marcas">
+          <SimpleBarChart
+            data={metrics.topBrands.map(item => ({
+              name: item.brand,
+              value: item.sales,
+            }))}
+          />
+        </ChartCard>
       </div>
     </div>
   );
