@@ -14,6 +14,22 @@ const nextConfig = {
   env: {
     BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-api-production.up.railway.app',
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.webmotors.com.br',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
   async rewrites() {
     const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-api-production.up.railway.app';
     

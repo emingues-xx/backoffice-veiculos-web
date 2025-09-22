@@ -24,7 +24,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
         {vehicle.images && vehicle.images.length > 0 ? (
           <Image
             src={vehicle.images[0]}
-            alt={`${vehicle.brand} ${vehicle.model}`}
+            alt={`${vehicle.brand} ${vehicle.vehicleModel}`}
             fill
             className="object-cover"
           />
@@ -36,8 +36,8 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
 
         {/* Status Badge */}
         <div className="absolute top-2 right-2">
-          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(vehicle.status)}`}>
-            {getStatusLabel(vehicle.status)}
+          <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(vehicle.condition)}`}>
+            {getStatusLabel(vehicle.condition)}
           </span>
         </div>
       </div>

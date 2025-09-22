@@ -1,5 +1,5 @@
 import { CreateVehicleRequest, UpdateVehicleRequest } from '@/types/vehicle';
-import { FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_CATEGORIES, VEHICLE_STATUS } from '@/utils/constants';
+import { FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_CATEGORIES, VEHICLE_CONDITIONS, VEHICLE_STATUS } from '@/utils/constants';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { useForm } from 'react-hook-form';
@@ -25,7 +25,13 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
     formState: { errors },
     watch,
   } = useForm<CreateVehicleRequest & { status?: string }>({
-    defaultValues: initialData,
+    defaultValues: initialData ? {
+      ...initialData,
+      // Map API field names to form field names
+      vehicleModel: initialData.vehicleModel || initialData.model,
+      fuelType: initialData.fuelType || initialData.fuel,
+      condition: initialData.condition || initialData.status,
+    } : {},
   });
 
   const handleFormSubmit = (data: CreateVehicleRequest & { status?: string }) => {

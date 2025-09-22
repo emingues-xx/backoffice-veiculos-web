@@ -14,12 +14,15 @@ export const TRANSMISSION_TYPES = [
 ] as const;
 
 export const VEHICLE_CATEGORIES = [
-  { value: 'hatch', label: 'Hatch' },
-  { value: 'sedan', label: 'Sedan' },
-  { value: 'suv', label: 'SUV' },
-  { value: 'pickup', label: 'Pickup' },
-  { value: 'truck', label: 'Caminhão' },
+  { value: 'car', label: 'Carro' },
   { value: 'motorcycle', label: 'Moto' },
+  { value: 'truck', label: 'Caminhão' },
+  { value: 'van', label: 'Van' },
+] as const;
+
+export const VEHICLE_CONDITIONS = [
+  { value: 'new', label: 'Novo' },
+  { value: 'used', label: 'Usado' },
 ] as const;
 
 export const VEHICLE_STATUS = [
