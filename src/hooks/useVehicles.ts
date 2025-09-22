@@ -5,7 +5,21 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 export const useVehicles = (filters?: VehicleFilters & { page?: number; limit?: number }) => {
   return useQuery<VehicleListResponse, Error>(
     ['vehicles', filters],
-    () => apiClient.getVehicles(filters),
+    async () => {
+      try {
+        return await apiClient.getVehicles(filters);
+      } catch (error) {
+        // Return empty data if API fails
+        console.warn('Vehicles API failed, returning empty data:', error);
+        return {
+          vehicles: [],
+          total: 0,
+          page: 1,
+          limit: 10,
+          totalPages: 0
+        };
+      }
+    },
     {
       keepPreviousData: true,
       staleTime: 5 * 60 * 1000, // 5 minutes

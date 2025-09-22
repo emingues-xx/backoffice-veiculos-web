@@ -169,7 +169,7 @@ export const VehicleList: React.FC = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {vehiclesData.vehicles.map((vehicle) => (
+              {vehiclesData.vehicles && vehiclesData.vehicles.map((vehicle) => (
                 <VehicleCard
                   key={vehicle.id}
                   vehicle={vehicle}
