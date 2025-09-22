@@ -16,6 +16,10 @@ const nextConfig = {
   },
   async rewrites() {
     const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL || 'http://localhost:3002';
+    
+    // Debug log to see what URL is being used
+    console.log('BFF Base URL:', bffBaseUrl);
+    console.log('NEXT_PUBLIC_BFF_BASE_URL env var:', process.env.NEXT_PUBLIC_BFF_BASE_URL);
 
     return [
       {
