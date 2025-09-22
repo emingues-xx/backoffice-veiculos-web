@@ -35,33 +35,25 @@ export const formatRelativeTime = (date: string | Date): string => {
   return `${Math.floor(diffInDays / 365)} anos atrás`;
 };
 
-export const getStatusColor = (status: string): string => {
-  switch (status) {
-    case 'active':
+export const getStatusColor = (condition: string): string => {
+  switch (condition) {
+    case 'new':
       return 'bg-green-100 text-green-800';
-    case 'inactive':
-      return 'bg-gray-100 text-gray-800';
-    case 'sold':
+    case 'used':
       return 'bg-blue-100 text-blue-800';
-    case 'reserved':
-      return 'bg-yellow-100 text-yellow-800';
     default:
       return 'bg-gray-100 text-gray-800';
   }
 };
 
-export const getStatusLabel = (status: string): string => {
-  switch (status) {
-    case 'active':
-      return 'Ativo';
-    case 'inactive':
-      return 'Inativo';
-    case 'sold':
-      return 'Vendido';
-    case 'reserved':
-      return 'Reservado';
+export const getStatusLabel = (condition: string): string => {
+  switch (condition) {
+    case 'new':
+      return 'Novo';
+    case 'used':
+      return 'Usado';
     default:
-      return status;
+      return condition;
   }
 };
 
@@ -99,18 +91,14 @@ export const getTransmissionLabel = (transmission: string): string => {
 
 export const getCategoryLabel = (category: string): string => {
   switch (category) {
-    case 'hatch':
-      return 'Hatch';
-    case 'sedan':
-      return 'Sedan';
-    case 'suv':
-      return 'SUV';
-    case 'pickup':
-      return 'Pickup';
-    case 'truck':
-      return 'Caminhão';
+    case 'car':
+      return 'Carro';
     case 'motorcycle':
       return 'Moto';
+    case 'truck':
+      return 'Caminhão';
+    case 'van':
+      return 'Van';
     default:
       return category;
   }

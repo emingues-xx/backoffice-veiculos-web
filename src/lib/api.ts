@@ -9,7 +9,7 @@ class ApiClient {
   constructor() {
     // Use relative URLs to leverage Next.js rewrites and avoid CORS issues
     this.client = axios.create({
-      baseURL: typeof window !== 'undefined' ? '' : (process.env.NEXT_PUBLIC_BFF_BASE_URL || 'http://localhost:3002'),
+      baseURL: typeof window !== 'undefined' ? '' : (process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app'),
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',

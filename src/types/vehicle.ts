@@ -1,57 +1,66 @@
 export interface Vehicle {
-  id: string;
+  _id: string;
   brand: string;
-  model: string;
+  vehicleModel: string;
   year: number;
   price: number;
   mileage: number;
-  fuel: 'gasoline' | 'ethanol' | 'flex' | 'diesel' | 'electric' | 'hybrid';
-  transmission: 'manual' | 'automatic' | 'cvt';
+  fuelType: 'gasoline' | 'diesel' | 'electric' | 'hybrid';
+  transmission: 'manual' | 'automatic';
   color: string;
   doors: number;
-  category: 'hatch' | 'sedan' | 'suv' | 'pickup' | 'truck' | 'motorcycle';
-  status: 'active' | 'inactive' | 'sold' | 'reserved';
-  description?: string;
+  category: 'car' | 'motorcycle' | 'truck' | 'van';
+  condition: 'new' | 'used';
+  description: string;
   images: string[];
-  createdAt: string;
-  updatedAt: string;
+  location: {
+    city: string;
+    state: string;
+    zipCode: string;
+  };
   seller: {
     id: string;
     name: string;
+    phone: string;
     email: string;
   };
+  isFeatured: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CreateVehicleRequest {
   brand: string;
-  model: string;
+  vehicleModel: string;
   year: number;
   price: number;
   mileage: number;
-  fuel: Vehicle['fuel'];
+  fuelType: Vehicle['fuelType'];
   transmission: Vehicle['transmission'];
   color: string;
   doors: number;
   category: Vehicle['category'];
-  description?: string;
-  images?: string[];
+  condition: Vehicle['condition'];
+  description: string;
+  images: string[];
+  location: Vehicle['location'];
+  seller: Vehicle['seller'];
+  isFeatured: boolean;
 }
 
-export interface UpdateVehicleRequest extends Partial<CreateVehicleRequest> {
-  status?: Vehicle['status'];
-}
+export interface UpdateVehicleRequest extends Partial<CreateVehicleRequest> {}
 
 export interface VehicleFilters {
   brand?: string;
-  model?: string;
+  vehicleModel?: string;
   yearMin?: number;
   yearMax?: number;
   priceMin?: number;
   priceMax?: number;
-  fuel?: Vehicle['fuel'];
+  fuelType?: Vehicle['fuelType'];
   transmission?: Vehicle['transmission'];
   category?: Vehicle['category'];
-  status?: Vehicle['status'];
+  condition?: Vehicle['condition'];
   search?: string;
 }
 

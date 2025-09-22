@@ -46,7 +46,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
       <div className="p-4">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-lg font-semibold text-gray-900">
-            {vehicle.brand} {vehicle.model}
+            {vehicle.brand} {vehicle.vehicleModel}
           </h3>
           <span className="text-sm text-gray-500">{vehicle.year}</span>
         </div>
@@ -62,7 +62,7 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
           </div>
           <div className="flex justify-between">
             <span>Combustível:</span>
-            <span>{getFuelLabel(vehicle.fuel)}</span>
+            <span>{getFuelLabel(vehicle.fuelType)}</span>
           </div>
           <div className="flex justify-between">
             <span>Câmbio:</span>

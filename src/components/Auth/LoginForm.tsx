@@ -25,8 +25,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     setError(null);
 
     try {
-      // Fazer login via API do BFF
-      const response = await fetch('/api/auth/login', {
+      // Fazer login via API
+      const response = await fetch('/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
           <div className="text-center">
             <p className="text-sm text-gray-600">
               <strong>Credenciais disponíveis:</strong><br />
-              Admin: admin@test.com / admin123<br />
+              Admin: admin@test.com / password123<br />
               Vendedor: vendedor@test.com / vendedor123
             </p>
           </div>
