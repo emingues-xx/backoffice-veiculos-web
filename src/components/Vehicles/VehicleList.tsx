@@ -160,7 +160,7 @@ export const VehicleList: React.FC = () => {
       {/* Vehicles Grid */}
       {vehiclesData && !isLoading && (
         <>
-          {vehiclesData.vehicles.length === 0 ? (
+          {vehiclesData.vehicles && vehiclesData.vehicles.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 text-lg">Nenhum veículo encontrado</p>
               <p className="text-gray-400 mt-2">
@@ -182,7 +182,7 @@ export const VehicleList: React.FC = () => {
           )}
 
           {/* Pagination */}
-          {vehiclesData.totalPages > 1 && (
+          {vehiclesData.totalPages && vehiclesData.totalPages > 1 && (
             <div className="flex justify-center items-center space-x-2 mt-8">
               <button
                 onClick={() => handlePageChange(filters.page! - 1)}
