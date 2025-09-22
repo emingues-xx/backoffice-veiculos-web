@@ -58,7 +58,7 @@ export const useUpdateVehicle = () => {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(['vehicles']);
-        queryClient.invalidateQueries(['vehicle', data.id]);
+        queryClient.invalidateQueries(['vehicle', data._id]);
       },
     }
   );

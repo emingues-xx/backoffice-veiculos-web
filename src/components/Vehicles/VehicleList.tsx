@@ -171,7 +171,7 @@ export const VehicleList: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {vehiclesData.vehicles && vehiclesData.vehicles.map((vehicle) => (
                 <VehicleCard
-                  key={vehicle.id}
+                  key={vehicle._id}
                   vehicle={vehicle}
                   onView={handleViewVehicle}
                   onEdit={handleEditVehicle}
@@ -229,7 +229,7 @@ export const VehicleList: React.FC = () => {
       {/* Edit Form Modal */}
       {editingVehicle && (
         <VehicleForm
-          initialData={vehiclesData?.vehicles.find(v => v.id === editingVehicle)}
+          initialData={vehiclesData?.vehicles.find(v => v._id === editingVehicle)}
           onSubmit={handleUpdateVehicle}
           onCancel={() => setEditingVehicle(null)}
           isLoading={updateVehicleMutation.isLoading}

@@ -91,21 +91,21 @@ export const VehicleCard: React.FC<VehicleCardProps> = ({
         {/* Actions */}
         <div className="mt-4 flex space-x-2">
           <button
-            onClick={() => onView(vehicle.id)}
+            onClick={() => onView(vehicle._id)}
             className="flex-1 bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center space-x-1"
           >
             <EyeIcon className="h-4 w-4" />
             <span>Ver</span>
           </button>
           <button
-            onClick={() => onEdit(vehicle.id)}
+            onClick={() => onEdit(vehicle._id)}
             className="flex-1 bg-yellow-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-yellow-700 transition-colors flex items-center justify-center space-x-1"
           >
             <PencilIcon className="h-4 w-4" />
             <span>Editar</span>
           </button>
           <button
-            onClick={() => onDelete(vehicle.id)}
+            onClick={() => onDelete(vehicle._id)}
             className="flex-1 bg-red-600 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-red-700 transition-colors flex items-center justify-center space-x-1"
           >
             <TrashIcon className="h-4 w-4" />
