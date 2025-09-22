@@ -1,3 +1,4 @@
+import { AuthProvider } from '@/components/Auth/AuthProvider';
 import { Layout } from '@/components/Layout/Layout';
 import '@/styles/globals.css';
 import React from 'react';
@@ -21,9 +22,11 @@ interface AppProps {
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <AuthProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
