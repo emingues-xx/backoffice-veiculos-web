@@ -12,10 +12,10 @@ const nextConfig = {
     ignoreBuildErrors: process.env.NODE_ENV === 'production',
   },
   env: {
-    BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'http://localhost:3002',
+    BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app',
   },
   async rewrites() {
-    const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL || 'http://localhost:3002';
+    const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app';
     
     // Debug log to see what URL is being used
     console.log('BFF Base URL:', bffBaseUrl);
