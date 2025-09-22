@@ -41,7 +41,7 @@ Verifica o status do BFF e serviços dependentes.
 
 ### Veículos
 
-#### GET /api/veiculos
+#### GET /api/vehicles
 Lista veículos com filtros e paginação.
 
 **Query Parameters:**
@@ -97,7 +97,7 @@ Lista veículos com filtros e paginação.
 }
 ```
 
-#### GET /api/veiculos/:id
+#### GET /api/vehicles/:id
 Obtém detalhes de um veículo específico.
 
 **Response:**
@@ -113,7 +113,7 @@ Obtém detalhes de um veículo específico.
 }
 ```
 
-#### POST /api/veiculos
+#### POST /api/vehicles
 Cria um novo veículo.
 
 **Request Body:**
@@ -134,7 +134,7 @@ Cria um novo veículo.
 }
 ```
 
-#### PUT /api/veiculos/:id
+#### PUT /api/vehicles/:id
 Atualiza um veículo existente.
 
 **Request Body:**
@@ -146,7 +146,7 @@ Atualiza um veículo existente.
 }
 ```
 
-#### DELETE /api/veiculos/:id
+#### DELETE /api/vehicles/:id
 Remove um veículo.
 
 **Response:**
@@ -199,7 +199,7 @@ Obtém métricas para o dashboard.
 
 ### Vendas
 
-#### GET /api/vendas
+#### GET /api/sales
 Lista vendas realizadas.
 
 **Query Parameters:**

@@ -1,5 +1,5 @@
-import { VeiculoList } from '@/components/Veiculos/VeiculoList';
+import { VehicleList } from '@/components/Vehicles/VehicleList';
 
-export default function VeiculosPage() {
-  return <VeiculoList />;
+export default function VehiclesPage() {
+  return <VehicleList />;
 }

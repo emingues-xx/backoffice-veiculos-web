@@ -1,6 +1,6 @@
 import { ApiError, ApiResponse, HealthCheck } from '@/types/api';
-import { DashboardMetrics, VendasResponse } from '@/types/dashboard';
-import { CreateVeiculoRequest, UpdateVeiculoRequest, Veiculo, VeiculoFilters, VeiculoListResponse } from '@/types/veiculo';
+import { DashboardMetrics, SalesResponse } from '@/types/dashboard';
+import { CreateVehicleRequest, UpdateVehicleRequest, Vehicle, VehicleFilters, VehicleListResponse } from '@/types/vehicle';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
 class ApiClient {
@@ -49,31 +49,31 @@ class ApiClient {
     return response.data;
   }
 
-  // Veículos
-  async getVeiculos(filters?: VeiculoFilters & { page?: number; limit?: number }): Promise<VeiculoListResponse> {
-    const response = await this.client.get<ApiResponse<VeiculoListResponse>>('/api/veiculos', {
+  // Vehicles (BFF uses English endpoints)
+  async getVehicles(filters?: VehicleFilters & { page?: number; limit?: number }): Promise<VehicleListResponse> {
+    const response = await this.client.get<ApiResponse<VehicleListResponse>>('/api/vehicles', {
       params: filters,
     });
     return response.data.data;
   }
 
-  async getVeiculo(id: string): Promise<Veiculo> {
-    const response = await this.client.get<ApiResponse<Veiculo>>(`/api/veiculos/${id}`);
+  async getVehicle(id: string): Promise<Vehicle> {
+    const response = await this.client.get<ApiResponse<Vehicle>>(`/api/vehicles/${id}`);
     return response.data.data;
   }
 
-  async createVeiculo(data: CreateVeiculoRequest): Promise<Veiculo> {
-    const response = await this.client.post<ApiResponse<Veiculo>>('/api/veiculos', data);
+  async createVehicle(data: CreateVehicleRequest): Promise<Vehicle> {
+    const response = await this.client.post<ApiResponse<Vehicle>>('/api/vehicles', data);
     return response.data.data;
   }
 
-  async updateVeiculo(id: string, data: UpdateVeiculoRequest): Promise<Veiculo> {
-    const response = await this.client.put<ApiResponse<Veiculo>>(`/api/veiculos/${id}`, data);
+  async updateVehicle(id: string, data: UpdateVehicleRequest): Promise<Vehicle> {
+    const response = await this.client.put<ApiResponse<Vehicle>>(`/api/vehicles/${id}`, data);
     return response.data.data;
   }
 
-  async deleteVeiculo(id: string): Promise<void> {
-    await this.client.delete(`/api/veiculos/${id}`);
+  async deleteVehicle(id: string): Promise<void> {
+    await this.client.delete(`/api/vehicles/${id}`);
   }
 
   // Dashboard
@@ -82,8 +82,8 @@ class ApiClient {
     return response.data.data;
   }
 
-  async getVendas(filters?: { page?: number; limit?: number; dataInicio?: string; dataFim?: string }): Promise<VendasResponse> {
-    const response = await this.client.get<ApiResponse<VendasResponse>>('/api/vendas', {
+  async getSales(filters?: { page?: number; limit?: number; startDate?: string; endDate?: string }): Promise<SalesResponse> {
+    const response = await this.client.get<ApiResponse<SalesResponse>>('/api/sales', {
       params: filters,
     });
     return response.data.data;
