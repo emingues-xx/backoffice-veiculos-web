@@ -1,9 +1,10 @@
 import { useCreateVehicle, useDeleteVehicle, useUpdateVehicle, useVehicles } from '@/hooks/useVehicles';
-import { CreateVehicleRequest, UpdateVehicleRequest, VehicleFilters as VehicleFiltersType } from '@/types/vehicle';
+import { CreateVehicleRequest, UpdateVehicleRequest, Vehicle, VehicleFilters as VehicleFiltersType } from '@/types/vehicle';
 import { DEFAULT_PAGE_SIZE, PAGINATION_LIMITS } from '@/utils/constants';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import React, { useState } from 'react';
 import { VehicleCard } from './VehicleCard';
+import { VehicleDetails } from './VehicleDetails';
 import { VehicleFilters } from './VehicleFilters';
 import { VehicleForm } from './VehicleForm';
 
@@ -15,6 +16,7 @@ export const VehicleList: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState<string | null>(null);
   const [deletingVehicle, setDeletingVehicle] = useState<string | null>(null);
+  const [viewingVehicle, setViewingVehicle] = useState<Vehicle | null>(null);
 
   const { data: vehiclesData, isLoading, error } = useVehicles(filters);
   const createVehicleMutation = useCreateVehicle();
@@ -67,8 +69,10 @@ export const VehicleList: React.FC = () => {
   };
 
   const handleViewVehicle = (id: string) => {
-    // TODO: Implement view vehicle details
-    console.log('View vehicle:', id);
+    const vehicle = vehiclesData?.vehicles.find(v => v._id === id);
+    if (vehicle) {
+      setViewingVehicle(vehicle);
+    }
   };
 
   const handleEditVehicle = (id: string) => {
@@ -266,6 +270,14 @@ export const VehicleList: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Vehicle Details Modal */}
+      {viewingVehicle && (
+        <VehicleDetails
+          vehicle={viewingVehicle}
+          onClose={() => setViewingVehicle(null)}
+        />
       )}
     </div>
   );

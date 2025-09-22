@@ -69,17 +69,17 @@ class ApiClient {
   }
 
   async getVehicle(id: string): Promise<Vehicle> {
-    const response = await this.client.get<ApiResponse<Vehicle>>(`/api/vehicles/${id}`);
+    const response = await this.client.get<any>(`/api/vehicles/${id}`);
     return response.data.data;
   }
 
   async createVehicle(data: CreateVehicleRequest): Promise<Vehicle> {
-    const response = await this.client.post<ApiResponse<Vehicle>>('/api/vehicles', data);
+    const response = await this.client.post<any>('/api/vehicles', data);
     return response.data.data;
   }
 
   async updateVehicle(id: string, data: UpdateVehicleRequest): Promise<Vehicle> {
-    const response = await this.client.put<ApiResponse<Vehicle>>(`/api/vehicles/${id}`, data);
+    const response = await this.client.put<any>(`/api/vehicles/${id}`, data);
     return response.data.data;
   }
 

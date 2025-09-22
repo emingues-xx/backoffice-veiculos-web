@@ -248,6 +248,23 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
             </div>
           </div>
 
+          {/* Condition */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Condição
+            </label>
+            <select
+              {...register('condition')}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              {VEHICLE_CONDITIONS.map((condition) => (
+                <option key={condition.value} value={condition.value}>
+                  {condition.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Status (only for edit) */}
           {isEdit && (
             <div>
