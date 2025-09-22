@@ -53,10 +53,19 @@ class ApiClient {
 
   // Vehicles (BFF uses English endpoints)
   async getVehicles(filters?: VehicleFilters & { page?: number; limit?: number }): Promise<VehicleListResponse> {
-    const response = await this.client.get<ApiResponse<VehicleListResponse>>('/api/vehicles', {
+    const response = await this.client.get<any>('/api/vehicles', {
       params: filters,
     });
-    return response.data.data;
+    
+    // Map the API response to our expected structure
+    const apiData = response.data;
+    return {
+      vehicles: apiData.data || [],
+      total: apiData.pagination?.total || 0,
+      page: apiData.pagination?.page || 1,
+      limit: apiData.pagination?.limit || 25,
+      totalPages: apiData.pagination?.totalPages || 0
+    };
   }
 
   async getVehicle(id: string): Promise<Vehicle> {
