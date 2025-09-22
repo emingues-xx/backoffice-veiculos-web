@@ -25,16 +25,29 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     setError(null);
 
     try {
-      // Para desenvolvimento, usar credenciais fixas
-      if (data.email === 'admin@veiculos.com' && data.password === 'admin123') {
-        const token = 'dev-token-' + Date.now();
+      // Fazer login via API do BFF
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        const token = result.data.token;
         localStorage.setItem('auth_token', token);
         onLogin(token);
       } else {
-        setError('Credenciais inválidas. Use: admin@veiculos.com / admin123');
+        setError(result.message || 'Credenciais inválidas');
       }
     } catch (err) {
-      setError('Erro ao fazer login');
+      setError('Erro ao conectar com o servidor');
     } finally {
       setIsLoading(false);
     }
@@ -69,7 +82,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                 type="email"
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Email"
-                defaultValue="admin@veiculos.com"
+                defaultValue="admin@test.com"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -117,9 +130,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              <strong>Credenciais para desenvolvimento:</strong><br />
-              Email: admin@veiculos.com<br />
-              Senha: admin123
+              <strong>Credenciais disponíveis:</strong><br />
+              Admin: admin@test.com / admin123<br />
+              Vendedor: vendedor@test.com / vendedor123
             </p>
           </div>
         </form>

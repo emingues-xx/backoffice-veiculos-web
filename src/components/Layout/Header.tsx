@@ -7,7 +7,24 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-  const { logout } = useAuth();
+  const { logout, token } = useAuth();
+  
+  // Decodificar o token JWT para obter informações do usuário
+  const getUserInfo = () => {
+    if (!token) return { name: 'Admin', email: 'admin@test.com' };
+    
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return {
+        name: payload.role === 'admin' ? 'Admin' : 'Vendedor',
+        email: payload.email || 'admin@test.com'
+      };
+    } catch {
+      return { name: 'Admin', email: 'admin@test.com' };
+    }
+  };
+  
+  const userInfo = getUserInfo();
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -33,8 +50,8 @@ export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
           <div className="flex items-center space-x-2">
             <UserCircleIcon className="h-8 w-8 text-gray-600" />
             <div className="hidden md:block">
-              <p className="text-sm font-medium text-gray-900">Admin</p>
-              <p className="text-xs text-gray-500">admin@veiculos.com</p>
+              <p className="text-sm font-medium text-gray-900">{userInfo.name}</p>
+              <p className="text-xs text-gray-500">{userInfo.email}</p>
             </div>
           </div>
 
