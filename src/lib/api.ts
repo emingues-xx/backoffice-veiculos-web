@@ -107,12 +107,25 @@ class ApiClient {
     
     // Map the API response to our expected structure
     const apiData = response.data;
+    
+    // Debug log to understand the response structure
+    if (process.env.NODE_ENV === 'production') {
+      console.log('API Response Structure:', {
+        hasData: !!apiData.data,
+        dataType: typeof apiData.data,
+        isArray: Array.isArray(apiData.data),
+        hasNestedData: !!apiData.data?.data,
+        nestedDataType: typeof apiData.data?.data,
+        isNestedArray: Array.isArray(apiData.data?.data)
+      });
+    }
+    
     return {
-      vehicles: apiData.data || apiData.vehicles || [],
-      total: apiData.pagination?.total || apiData.total || 0,
-      page: apiData.pagination?.page || apiData.page || 1,
-      limit: apiData.pagination?.limit || apiData.limit || 25,
-      totalPages: apiData.pagination?.totalPages || apiData.totalPages || 0
+      vehicles: apiData.data?.data || apiData.data || apiData.vehicles || [],
+      total: apiData.data?.pagination?.total || apiData.pagination?.total || apiData.total || 0,
+      page: apiData.data?.pagination?.page || apiData.pagination?.page || apiData.page || 1,
+      limit: apiData.data?.pagination?.limit || apiData.pagination?.limit || apiData.limit || 25,
+      totalPages: apiData.data?.pagination?.totalPages || apiData.pagination?.totalPages || apiData.totalPages || 0
     };
   }
 
