@@ -7,9 +7,9 @@ class ApiClient {
   private client: AxiosInstance;
 
   constructor() {
-    // Use relative URLs to leverage Next.js rewrites and avoid CORS issues
+    // Use BFF endpoint directly
     this.client = axios.create({
-      baseURL: typeof window !== 'undefined' ? '' : (process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app'),
+      baseURL: 'https://backoffice-veiculos-bff-production.up.railway.app',
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json',
@@ -51,36 +51,70 @@ class ApiClient {
     return response.data;
   }
 
+  // Authentication
+  async login(email: string, password: string): Promise<{ token: string; user: any }> {
+    const response = await this.client.post<any>('/api/users/login', {
+      email,
+      password,
+    });
+    return response.data;
+  }
+
+  async logout(): Promise<void> {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+    }
+  }
+
   // Vehicles (BFF uses English endpoints)
   async getVehicles(filters?: VehicleFilters & { page?: number; limit?: number }): Promise<VehicleListResponse> {
+    // Map filter names to API parameter names
+    const apiFilters: any = {};
+    
+    if (filters) {
+      if (filters.brand) apiFilters.brand = filters.brand;
+      if (filters.vehicleModel) apiFilters.model = filters.vehicleModel;
+      if (filters.yearMin) apiFilters.minYear = filters.yearMin;
+      if (filters.yearMax) apiFilters.maxYear = filters.yearMax;
+      if (filters.priceMin) apiFilters.minPrice = filters.priceMin;
+      if (filters.priceMax) apiFilters.maxPrice = filters.priceMax;
+      if (filters.fuelType) apiFilters.fuelType = filters.fuelType;
+      if (filters.transmission) apiFilters.transmission = filters.transmission;
+      if (filters.category) apiFilters.category = filters.category;
+      if (filters.condition) apiFilters.condition = filters.condition;
+      if (filters.search) apiFilters.search = filters.search;
+      if (filters.page) apiFilters.page = filters.page;
+      if (filters.limit) apiFilters.limit = filters.limit;
+    }
+
     const response = await this.client.get<any>('/api/vehicles', {
-      params: filters,
+      params: apiFilters,
     });
     
     // Map the API response to our expected structure
     const apiData = response.data;
     return {
-      vehicles: apiData.data || [],
-      total: apiData.pagination?.total || 0,
-      page: apiData.pagination?.page || 1,
-      limit: apiData.pagination?.limit || 25,
-      totalPages: apiData.pagination?.totalPages || 0
+      vehicles: apiData.data || apiData.vehicles || [],
+      total: apiData.pagination?.total || apiData.total || 0,
+      page: apiData.pagination?.page || apiData.page || 1,
+      limit: apiData.pagination?.limit || apiData.limit || 25,
+      totalPages: apiData.pagination?.totalPages || apiData.totalPages || 0
     };
   }
 
   async getVehicle(id: string): Promise<Vehicle> {
     const response = await this.client.get<any>(`/api/vehicles/${id}`);
-    return response.data.data;
+    return response.data.data || response.data;
   }
 
   async createVehicle(data: CreateVehicleRequest): Promise<Vehicle> {
     const response = await this.client.post<any>('/api/vehicles', data);
-    return response.data.data;
+    return response.data.data || response.data;
   }
 
   async updateVehicle(id: string, data: UpdateVehicleRequest): Promise<Vehicle> {
     const response = await this.client.put<any>(`/api/vehicles/${id}`, data);
-    return response.data.data;
+    return response.data.data || response.data;
   }
 
   async deleteVehicle(id: string): Promise<void> {

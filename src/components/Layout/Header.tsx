@@ -7,24 +7,9 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ onMenuClick }) => {
-  const { logout, token } = useAuth();
+  const { logout, user } = useAuth();
   
-  // Decodificar o token JWT para obter informações do usuário
-  const getUserInfo = () => {
-    if (!token) return { name: 'Admin', email: 'admin@test.com' };
-    
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return {
-        name: payload.role === 'admin' ? 'Admin' : 'Vendedor',
-        email: payload.email || 'admin@test.com'
-      };
-    } catch {
-      return { name: 'Admin', email: 'admin@test.com' };
-    }
-  };
-  
-  const userInfo = getUserInfo();
+  const userInfo = user || { name: 'Admin', email: 'admin@test.com' };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">

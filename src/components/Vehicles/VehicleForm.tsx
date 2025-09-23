@@ -1,8 +1,9 @@
 import { CreateVehicleRequest, UpdateVehicleRequest } from '@/types/vehicle';
 import { FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_CATEGORIES, VEHICLE_CONDITIONS, VEHICLE_STATUS } from '@/utils/constants';
 import { apiClient } from '@/lib/api';
+import { useAuth } from '@/hooks/useAuth';
 import { XMarkIcon, PhotoIcon, TrashIcon } from '@heroicons/react/24/outline';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface VehicleFormProps {
@@ -22,6 +23,7 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
 }) => {
   const [images, setImages] = useState<string[]>(initialData?.images || []);
   const [uploadingImages, setUploadingImages] = useState(false);
+  const { user } = useAuth();
 
   const {
     register,
@@ -51,10 +53,27 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
       isFeatured: initialData.isFeatured || false,
     } : {
       location: { city: '', state: '', zipCode: '' },
-      seller: { id: '', name: '', phone: '', email: '' },
+      seller: user ? { 
+        id: user.id, 
+        name: user.name, 
+        phone: user.phone || '', 
+        email: user.email 
+      } : { id: '', name: '', phone: '', email: '' },
       isFeatured: false,
     },
   });
+
+  // Update seller info when user changes
+  useEffect(() => {
+    if (user && !isEdit) {
+      setValue('seller', {
+        id: user.id,
+        name: user.name,
+        phone: user.phone || '',
+        email: user.email
+      });
+    }
+  }, [user, setValue, isEdit]);
 
   const handleImageUpload = async (files: FileList) => {
     setUploadingImages(true);
@@ -81,21 +100,24 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
   const handleFormSubmit = (data: CreateVehicleRequest & { status?: string }) => {
     const { status, ...vehicleData } = data;
     
-    // Map English field names to Portuguese API field names
+    // API now uses English field names directly
     const apiData = {
-      marca: vehicleData.brand,
-      modelo: vehicleData.vehicleModel,
-      ano: vehicleData.year,
-      preco: vehicleData.price,
-      quilometragem: vehicleData.mileage,
-      combustivel: vehicleData.fuelType,
-      cambio: vehicleData.transmission,
-      cor: vehicleData.color,
-      portas: vehicleData.doors,
-      categoria: vehicleData.category,
-      condicao: vehicleData.condition,
-      descricao: vehicleData.description,
-      imagens: images,
+      brand: vehicleData.brand,
+      vehicleModel: vehicleData.vehicleModel,
+      year: vehicleData.year,
+      price: vehicleData.price,
+      mileage: vehicleData.mileage,
+      fuelType: vehicleData.fuelType,
+      transmission: vehicleData.transmission,
+      color: vehicleData.color,
+      doors: vehicleData.doors,
+      category: vehicleData.category,
+      condition: vehicleData.condition,
+      description: vehicleData.description,
+      images: images,
+      location: vehicleData.location,
+      seller: vehicleData.seller,
+      isFeatured: vehicleData.isFeatured,
       // Add status for edit mode
       ...(isEdit && status && { status })
     };

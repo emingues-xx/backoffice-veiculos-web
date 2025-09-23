@@ -36,24 +36,7 @@ const nextConfig = {
       },
     ],
   },
-  async rewrites() {
-    const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-api-production.up.railway.app';
-    
-    // Debug log to see what URL is being used
-    console.log('BFF Base URL:', bffBaseUrl);
-    console.log('NEXT_PUBLIC_BFF_BASE_URL env var:', process.env.NEXT_PUBLIC_BFF_BASE_URL);
-
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${bffBaseUrl}/api/:path*`,
-      },
-      {
-        source: '/health',
-        destination: `${bffBaseUrl}/health`,
-      },
-    ];
-  },
+  // Removed rewrites since we're using BFF directly
 };
 
 module.exports = nextConfig;

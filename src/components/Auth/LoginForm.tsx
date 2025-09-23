@@ -1,56 +1,14 @@
+import { useAuth } from '@/hooks/useAuth';
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
 
-interface LoginFormData {
-  email: string;
-  password: string;
-}
+export const LoginForm: React.FC = () => {
+  const [email, setEmail] = useState('admin@test.com');
+  const [password, setPassword] = useState('password123');
+  const { login, isLoading, loginError } = useAuth();
 
-interface LoginFormProps {
-  onLogin: (token: string) => void;
-}
-
-export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormData>();
-
-  const onSubmit = async (data: LoginFormData) => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      // Fazer login via API
-      const response = await fetch('/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        const token = result.data.token;
-        localStorage.setItem('auth_token', token);
-        onLogin(token);
-      } else {
-        setError(result.message || 'Credenciais inválidas');
-      }
-    } catch (err) {
-      setError('Erro ao conectar com o servidor');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    login({ email, password });
   };
 
   return (
@@ -64,57 +22,45 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
             Faça login para acessar o sistema
           </p>
         </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email" className="sr-only">
                 Email
               </label>
               <input
-                {...register('email', { 
-                  required: 'Email é obrigatório',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Email inválido'
-                  }
-                })}
+                id="email"
+                name="email"
                 type="email"
+                autoComplete="email"
+                required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Email"
-                defaultValue="admin@test.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-              )}
             </div>
-            
             <div>
               <label htmlFor="password" className="sr-only">
                 Senha
               </label>
               <input
-                {...register('password', { 
-                  required: 'Senha é obrigatória',
-                  minLength: {
-                    value: 6,
-                    message: 'Senha deve ter pelo menos 6 caracteres'
-                  }
-                })}
+                id="password"
+                name="password"
                 type="password"
+                autoComplete="current-password"
+                required
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Senha"
-                defaultValue="admin123"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
-              {errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
-              )}
             </div>
           </div>
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-4">
-              <p className="text-sm text-red-600">{error}</p>
+          {loginError && (
+            <div className="text-red-600 text-sm text-center">
+              {loginError.message}
             </div>
           )}
 
@@ -122,18 +68,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
               {isLoading ? 'Entrando...' : 'Entrar'}
             </button>
-          </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              <strong>Credenciais disponíveis:</strong><br />
-              Admin: admin@test.com / password123<br />
-              Vendedor: vendedor@test.com / vendedor123
-            </p>
           </div>
         </form>
       </div>

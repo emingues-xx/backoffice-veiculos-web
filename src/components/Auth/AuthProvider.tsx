@@ -1,10 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { LoginForm } from './LoginForm';
+import { useAuth as useAuthHook } from '@/hooks/useAuth';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
-  login: (token: string) => void;
+  user: any;
+  login: (credentials: { email: string; password: string }) => void;
   logout: () => void;
 }
 
@@ -23,30 +25,14 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const authHook = useAuthHook();
 
   useEffect(() => {
-    // Verificar se há token no localStorage
+    // Check if there's a token in localStorage
     const savedToken = localStorage.getItem('auth_token');
-    if (savedToken) {
-      setToken(savedToken);
-      setIsAuthenticated(true);
-    }
     setIsLoading(false);
   }, []);
-
-  const login = (newToken: string) => {
-    setToken(newToken);
-    setIsAuthenticated(true);
-  };
-
-  const logout = () => {
-    localStorage.removeItem('auth_token');
-    setToken(null);
-    setIsAuthenticated(false);
-  };
 
   if (isLoading) {
     return (
@@ -56,12 +42,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     );
   }
 
-  if (!isAuthenticated) {
-    return <LoginForm onLogin={login} />;
+  if (!authHook.isAuthenticated) {
+    return <LoginForm />;
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, token, login, logout }}>
+    <AuthContext.Provider value={{
+      isAuthenticated: authHook.isAuthenticated,
+      token: typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null,
+      user: authHook.user,
+      login: authHook.login,
+      logout: authHook.logout,
+    }}>
       {children}
     </AuthContext.Provider>
   );
