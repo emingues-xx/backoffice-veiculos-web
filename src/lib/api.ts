@@ -112,6 +112,35 @@ class ApiClient {
     });
     return response.data.data.url;
   }
+
+  // Validar e substituir URLs de imagens inválidas
+  async validateAndReplaceImages(images: string[]): Promise<string[]> {
+    const validImages: string[] = [];
+    
+    for (const imageUrl of images) {
+      try {
+        // Verificar se é uma URL do Unsplash que pode causar problemas
+        if (imageUrl.includes('images.unsplash.com')) {
+          // Substituir por uma imagem placeholder válida
+          validImages.push('https://via.placeholder.com/400x300/cccccc/666666?text=Imagem+do+Veículo');
+        } else {
+          // Testar se a imagem é acessível
+          const response = await fetch(imageUrl, { method: 'HEAD' });
+          if (response.ok) {
+            validImages.push(imageUrl);
+          } else {
+            // Substituir por placeholder se não for acessível
+            validImages.push('https://via.placeholder.com/400x300/cccccc/666666?text=Imagem+do+Veículo');
+          }
+        }
+      } catch (error) {
+        // Em caso de erro, usar placeholder
+        validImages.push('https://via.placeholder.com/400x300/cccccc/666666?text=Imagem+do+Veículo');
+      }
+    }
+    
+    return validImages;
+  }
 }
 
 export const apiClient = new ApiClient();

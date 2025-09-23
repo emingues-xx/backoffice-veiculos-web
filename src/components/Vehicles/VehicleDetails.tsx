@@ -39,6 +39,7 @@ export const VehicleDetails: React.FC<VehicleDetailsProps> = ({
                     alt={`${vehicle.brand} ${vehicle.vehicleModel} - Imagem ${index + 1}`}
                     fill
                     className="object-cover"
+                    unoptimized
                   />
                 </div>
               ))}

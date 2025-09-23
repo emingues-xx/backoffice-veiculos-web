@@ -7,7 +7,20 @@ export const useVehicles = (filters?: VehicleFilters & { page?: number; limit?: 
     ['vehicles', filters],
     async () => {
       try {
-        return await apiClient.getVehicles(filters);
+        const data = await apiClient.getVehicles(filters);
+        
+        // Validar e substituir imagens inválidas
+        const vehiclesWithValidImages = await Promise.all(
+          data.vehicles.map(async (vehicle) => ({
+            ...vehicle,
+            images: await apiClient.validateAndReplaceImages(vehicle.images || [])
+          }))
+        );
+        
+        return {
+          ...data,
+          vehicles: vehiclesWithValidImages
+        };
       } catch (error) {
         // Return empty data if API fails
         console.warn('Vehicles API failed, returning empty data:', error);
@@ -30,7 +43,12 @@ export const useVehicles = (filters?: VehicleFilters & { page?: number; limit?: 
 export const useVehicle = (id: string) => {
   return useQuery<Vehicle, Error>(
     ['vehicle', id],
-    () => apiClient.getVehicle(id),
+    async () => {
+      const vehicle = await apiClient.getVehicle(id);
+      // Validar e substituir imagens inválidas
+      vehicle.images = await apiClient.validateAndReplaceImages(vehicle.images || []);
+      return vehicle;
+    },
     {
       enabled: !!id,
     }

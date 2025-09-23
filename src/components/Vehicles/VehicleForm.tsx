@@ -1,7 +1,8 @@
 import { CreateVehicleRequest, UpdateVehicleRequest } from '@/types/vehicle';
 import { FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_CATEGORIES, VEHICLE_CONDITIONS, VEHICLE_STATUS } from '@/utils/constants';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import React from 'react';
+import { apiClient } from '@/lib/api';
+import { XMarkIcon, PhotoIcon, TrashIcon } from '@heroicons/react/24/outline';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface VehicleFormProps {
@@ -19,25 +20,87 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
   isLoading = false,
   isEdit = false,
 }) => {
+  const [images, setImages] = useState<string[]>(initialData?.images || []);
+  const [uploadingImages, setUploadingImages] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm<CreateVehicleRequest & { status?: string }>({
     defaultValues: initialData ? {
       ...initialData,
       // Map API field names to form field names
-      vehicleModel: initialData.vehicleModel || initialData.model,
-      fuelType: initialData.fuelType || initialData.fuel,
-      condition: initialData.condition || initialData.status,
-    } : {},
+      brand: initialData.brand,
+      vehicleModel: initialData.vehicleModel,
+      year: initialData.year,
+      price: initialData.price,
+      mileage: initialData.mileage,
+      fuelType: initialData.fuelType,
+      transmission: initialData.transmission,
+      color: initialData.color,
+      doors: initialData.doors,
+      category: initialData.category,
+      condition: initialData.condition,
+      description: initialData.description,
+      // Set default values for missing fields
+      location: initialData.location || { city: '', state: '', zipCode: '' },
+      seller: initialData.seller || { id: '', name: '', phone: '', email: '' },
+      isFeatured: initialData.isFeatured || false,
+    } : {
+      location: { city: '', state: '', zipCode: '' },
+      seller: { id: '', name: '', phone: '', email: '' },
+      isFeatured: false,
+    },
   });
+
+  const handleImageUpload = async (files: FileList) => {
+    setUploadingImages(true);
+    try {
+      const uploadPromises = Array.from(files).map(file => apiClient.uploadImage(file));
+      const uploadedUrls = await Promise.all(uploadPromises);
+      const newImages = [...images, ...uploadedUrls];
+      setImages(newImages);
+      setValue('images', newImages);
+    } catch (error) {
+      console.error('Erro ao fazer upload das imagens:', error);
+      alert('Erro ao fazer upload das imagens. Tente novamente.');
+    } finally {
+      setUploadingImages(false);
+    }
+  };
+
+  const removeImage = (index: number) => {
+    const newImages = images.filter((_, i) => i !== index);
+    setImages(newImages);
+    setValue('images', newImages);
+  };
 
   const handleFormSubmit = (data: CreateVehicleRequest & { status?: string }) => {
     const { status, ...vehicleData } = data;
-    const submitData = isEdit ? { ...vehicleData, status } : vehicleData;
-    onSubmit(submitData);
+    
+    // Map English field names to Portuguese API field names
+    const apiData = {
+      marca: vehicleData.brand,
+      modelo: vehicleData.vehicleModel,
+      ano: vehicleData.year,
+      preco: vehicleData.price,
+      quilometragem: vehicleData.mileage,
+      combustivel: vehicleData.fuelType,
+      cambio: vehicleData.transmission,
+      cor: vehicleData.color,
+      portas: vehicleData.doors,
+      categoria: vehicleData.category,
+      condicao: vehicleData.condition,
+      descricao: vehicleData.description,
+      imagens: images,
+      // Add status for edit mode
+      ...(isEdit && status && { status })
+    };
+    
+    onSubmit(apiData);
   };
 
   return (
@@ -79,12 +142,12 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
               </label>
               <input
                 type="text"
-                {...register('model', { required: 'Modelo é obrigatório' })}
+                {...register('vehicleModel', { required: 'Modelo é obrigatório' })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Ex: Corolla"
               />
-              {errors.model && (
-                <p className="text-red-500 text-sm mt-1">{errors.model.message}</p>
+              {errors.vehicleModel && (
+                <p className="text-red-500 text-sm mt-1">{errors.vehicleModel.message}</p>
               )}
             </div>
           </div>
@@ -154,7 +217,7 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
                 Combustível *
               </label>
               <select
-                {...register('fuel', { required: 'Combustível é obrigatório' })}
+                {...register('fuelType', { required: 'Combustível é obrigatório' })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Selecione o combustível</option>
@@ -164,8 +227,8 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
                   </option>
                 ))}
               </select>
-              {errors.fuel && (
-                <p className="text-red-500 text-sm mt-1">{errors.fuel.message}</p>
+              {errors.fuelType && (
+                <p className="text-red-500 text-sm mt-1">{errors.fuelType.message}</p>
               )}
             </div>
 
@@ -283,6 +346,173 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
               </select>
             </div>
           )}
+
+          {/* Images */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Imagens
+            </label>
+            <div className="space-y-4">
+              {/* Image Upload */}
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => e.target.files && handleImageUpload(e.target.files)}
+                  className="hidden"
+                  id="image-upload"
+                  disabled={uploadingImages}
+                />
+                <label
+                  htmlFor="image-upload"
+                  className="cursor-pointer flex flex-col items-center space-y-2"
+                >
+                  <PhotoIcon className="h-8 w-8 text-gray-400" />
+                  <span className="text-sm text-gray-600">
+                    {uploadingImages ? 'Fazendo upload...' : 'Clique para adicionar imagens'}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    PNG, JPG, GIF até 10MB cada
+                  </span>
+                </label>
+              </div>
+
+              {/* Image Preview */}
+              {images.length > 0 && (
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {images.map((image, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={image}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Location */}
+          <div>
+            <h4 className="text-md font-medium text-gray-900 mb-3">Localização</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Cidade *
+                </label>
+                <input
+                  type="text"
+                  {...register('location.city', { required: 'Cidade é obrigatória' })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: São Paulo"
+                />
+                {errors.location?.city && (
+                  <p className="text-red-500 text-sm mt-1">{errors.location.city.message}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Estado *
+                </label>
+                <input
+                  type="text"
+                  {...register('location.state', { required: 'Estado é obrigatório' })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: SP"
+                />
+                {errors.location?.state && (
+                  <p className="text-red-500 text-sm mt-1">{errors.location.state.message}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  CEP *
+                </label>
+                <input
+                  type="text"
+                  {...register('location.zipCode', { required: 'CEP é obrigatório' })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: 01234-567"
+                />
+                {errors.location?.zipCode && (
+                  <p className="text-red-500 text-sm mt-1">{errors.location.zipCode.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Seller */}
+          <div>
+            <h4 className="text-md font-medium text-gray-900 mb-3">Vendedor</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nome *
+                </label>
+                <input
+                  type="text"
+                  {...register('seller.name', { required: 'Nome do vendedor é obrigatório' })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: João Silva"
+                />
+                {errors.seller?.name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.seller.name.message}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email *
+                </label>
+                <input
+                  type="email"
+                  {...register('seller.email', { required: 'Email é obrigatório' })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: joao@email.com"
+                />
+                {errors.seller?.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.seller.email.message}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Telefone *
+                </label>
+                <input
+                  type="tel"
+                  {...register('seller.phone', { required: 'Telefone é obrigatório' })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Ex: (11) 99999-9999"
+                />
+                {errors.seller?.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.seller.phone.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Featured */}
+          <div>
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                {...register('isFeatured')}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                Destacar este veículo
+              </span>
+            </label>
+          </div>
 
           {/* Description */}
           <div>
