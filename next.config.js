@@ -12,7 +12,7 @@ const nextConfig = {
     ignoreBuildErrors: process.env.NODE_ENV === 'production',
   },
   env: {
-    BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-api-production.up.railway.app',
+    BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app',
   },
   images: {
     remotePatterns: [
@@ -36,7 +36,20 @@ const nextConfig = {
       },
     ],
   },
-  // Removed rewrites since we're using BFF directly
+  async rewrites() {
+    const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app';
+    
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${bffBaseUrl}/api/:path*`,
+      },
+      {
+        source: '/health',
+        destination: `${bffBaseUrl}/health`,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
+import { EnvDebug } from '../Debug/EnvDebug';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,6 +23,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </main>
       </div>
+      
+      <EnvDebug />
     </div>
   );
 };

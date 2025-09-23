@@ -7,10 +7,24 @@ class ApiClient {
   private client: AxiosInstance;
 
   constructor() {
-    // Use BFF endpoint directly
+    // Use relative URLs on client side (leverages Next.js rewrites)
+    // Use direct BFF URL on server side
+    const baseURL = typeof window !== 'undefined' 
+      ? '' // Use relative URLs to leverage rewrites
+      : (process.env.BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app');
+    
+    // Debug log for environment variables
+    if (process.env.NODE_ENV === 'production') {
+      console.log('API Client Configuration:');
+      console.log('- BFF_BASE_URL:', process.env.BFF_BASE_URL);
+      console.log('- NEXT_PUBLIC_BFF_BASE_URL:', process.env.NEXT_PUBLIC_BFF_BASE_URL);
+      console.log('- API_TIMEOUT:', process.env.NEXT_PUBLIC_API_TIMEOUT);
+      console.log('- Base URL:', baseURL);
+    }
+    
     this.client = axios.create({
-      baseURL: 'https://backoffice-veiculos-bff-production.up.railway.app',
-      timeout: 10000,
+      baseURL,
+      timeout: parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '10000'),
       headers: {
         'Content-Type': 'application/json',
       },
