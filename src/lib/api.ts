@@ -67,11 +67,40 @@ class ApiClient {
 
   // Authentication
   async login(email: string, password: string): Promise<{ token: string; user: any }> {
-    const response = await this.client.post<any>('/api/users/login', {
-      email,
-      password,
-    });
-    return response.data;
+    try {
+      console.log('Attempting login with:', { email, password: '***' });
+      console.log('Login URL:', this.client.defaults.baseURL + '/api/users/login');
+      
+      // Try BFF endpoint first
+      let response;
+      try {
+        response = await this.client.post<any>('/api/users/login', {
+          email,
+          password,
+        });
+      } catch (bffError: any) {
+        console.log('BFF login failed, trying direct API...');
+        // If BFF fails, try direct API
+        const directApiClient = axios.create({
+          baseURL: 'https://backoffice-veiculos-api-production.up.railway.app',
+          timeout: parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '10000'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        response = await directApiClient.post<any>('/api/users/login', {
+          email,
+          password,
+        });
+      }
+      
+      console.log('Login response:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('Login error:', error.response?.data || error.message);
+      throw error;
+    }
   }
 
   async logout(): Promise<void> {
