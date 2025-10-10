@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { LoginForm } from './LoginForm';
+import { Layout } from '@/components/Layout/Layout';
 import { apiClient } from '@/lib/api';
 
 interface AuthContextType {
@@ -98,7 +99,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       login,
       logout,
     }}>
-      {children}
+      <Layout>
+        {children}
+      </Layout>
     </AuthContext.Provider>
   );
 };

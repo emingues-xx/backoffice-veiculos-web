@@ -12,7 +12,9 @@ const nextConfig = {
     ignoreBuildErrors: process.env.NODE_ENV === 'production',
   },
   env: {
-    BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app',
+    BFF_BASE_URL: process.env.BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app',
+    NEXT_PUBLIC_BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app',
+    NEXT_PUBLIC_API_TIMEOUT: process.env.NEXT_PUBLIC_API_TIMEOUT || '10000',
   },
   images: {
     remotePatterns: [
