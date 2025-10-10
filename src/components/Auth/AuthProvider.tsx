@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { LoginForm } from './LoginForm';
-import { useAuth as useAuthHook } from '@/hooks/useAuth';
+import { apiClient } from '@/lib/api';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   token: string | null;
   user: any;
-  login: (credentials: { email: string; password: string }) => void;
+  login: (credentials: { email: string; password: string }) => Promise<void>;
   logout: () => void;
 }
 
@@ -26,13 +26,57 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
-  const authHook = useAuthHook();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   useEffect(() => {
     // Check if there's a token in localStorage
-    const savedToken = localStorage.getItem('auth_token');
+    const savedToken = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    if (savedToken) {
+      setToken(savedToken);
+      setIsAuthenticated(true);
+      // Set default user data
+      setUser({
+        id: '68d1d34f2dd6f78e64b71fff',
+        name: 'Admin User',
+        email: 'admin@test.com',
+        phone: '(11) 99999-9999'
+      });
+    }
     setIsLoading(false);
   }, []);
+
+  const login = async (credentials: { email: string; password: string }) => {
+    try {
+      const response = await apiClient.login(credentials.email, credentials.password);
+      
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('auth_token', response.token);
+      }
+      
+      setToken(response.token);
+      setIsAuthenticated(true);
+      setUser(response.user || {
+        id: '68d1d34f2dd6f78e64b71fff',
+        name: 'Admin User',
+        email: 'admin@test.com',
+        phone: '(11) 99999-9999'
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      throw error;
+    }
+  };
+
+  const logout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('auth_token');
+    }
+    setToken(null);
+    setIsAuthenticated(false);
+    setUser(null);
+  };
 
   if (isLoading) {
     return (
@@ -42,17 +86,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     );
   }
 
-  if (!authHook.isAuthenticated) {
+  if (!isAuthenticated) {
     return <LoginForm />;
   }
 
   return (
     <AuthContext.Provider value={{
-      isAuthenticated: authHook.isAuthenticated,
-      token: typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null,
-      user: authHook.user,
-      login: authHook.login,
-      logout: authHook.logout,
+      isAuthenticated,
+      token,
+      user,
+      login,
+      logout,
     }}>
       {children}
     </AuthContext.Provider>

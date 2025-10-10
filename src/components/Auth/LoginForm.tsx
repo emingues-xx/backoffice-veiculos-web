@@ -1,14 +1,25 @@
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/components/Auth/AuthProvider';
 import React, { useState } from 'react';
 
 export const LoginForm: React.FC = () => {
   const [email, setEmail] = useState('admin@test.com');
   const [password, setPassword] = useState('password123');
-  const { login, isLoading, loginError } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    login({ email, password });
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      await login({ email, password });
+    } catch (err: any) {
+      setError(err.message || 'Erro ao fazer login. Verifique suas credenciais.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -58,9 +69,9 @@ export const LoginForm: React.FC = () => {
             </div>
           </div>
 
-          {loginError && (
+          {error && (
             <div className="text-red-600 text-sm text-center">
-              {loginError.message}
+              {error}
             </div>
           )}
 
