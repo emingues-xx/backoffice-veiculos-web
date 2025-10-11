@@ -52,6 +52,13 @@ const nextConfig = {
       },
     ];
   },
+  
+  // Configurações para desenvolvimento local
+  ...(process.env.NODE_ENV === 'development' && {
+    experimental: {
+      serverComponentsExternalPackages: ['axios'],
+    },
+  }),
 };
 
 module.exports = nextConfig;

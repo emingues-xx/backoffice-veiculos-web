@@ -71,7 +71,27 @@ class ApiClient {
       console.log('Attempting login with:', { email, password: '***' });
       console.log('Login URL:', this.client.defaults.baseURL + '/api/users/login');
       
-      // Try BFF endpoint first
+      // In development, use direct API to avoid SSL/CORS issues
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Development mode: using direct API');
+        const directApiClient = axios.create({
+          baseURL: 'https://backoffice-veiculos-api-production.up.railway.app',
+          timeout: parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '10000'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        const response = await directApiClient.post<any>('/api/users/login', {
+          email,
+          password,
+        });
+        
+        console.log('Login response:', response.data);
+        return response.data;
+      }
+      
+      // In production, try BFF first, then fallback to direct API
       let response;
       try {
         response = await this.client.post<any>('/api/users/login', {
