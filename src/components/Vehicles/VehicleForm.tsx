@@ -1,7 +1,7 @@
 import { CreateVehicleRequest, UpdateVehicleRequest } from '@/types/vehicle';
 import { FUEL_TYPES, TRANSMISSION_TYPES, VEHICLE_CATEGORIES, VEHICLE_CONDITIONS, VEHICLE_STATUS } from '@/utils/constants';
 import { apiClient } from '@/lib/api';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/components/Auth/AuthProvider';
 import { XMarkIcon, PhotoIcon, TrashIcon } from '@heroicons/react/24/outline';
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
