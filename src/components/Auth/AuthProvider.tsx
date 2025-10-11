@@ -79,18 +79,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setUser(null);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return <LoginForm />;
-  }
-
   return (
     <AuthContext.Provider value={{
       isAuthenticated,
@@ -99,9 +87,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       login,
       logout,
     }}>
-      <Layout>
-        {children}
-      </Layout>
+      {isLoading ? (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        </div>
+      ) : !isAuthenticated ? (
+        <LoginForm />
+      ) : (
+        <Layout>
+          {children}
+        </Layout>
+      )}
     </AuthContext.Provider>
   );
 };
