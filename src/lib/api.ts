@@ -94,7 +94,7 @@ class ApiClient {
       // In production, try BFF first, then fallback to direct API
       let response;
       try {
-        response = await this.client.post<any>('/api/users/login', {
+        response = await this.client.post<any>('/api/auth/login', {
           email,
           password,
         });
