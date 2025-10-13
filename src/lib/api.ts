@@ -70,8 +70,13 @@ class ApiClient {
   // Fix UTF-8 encoding issues
   private fixUtf8Encoding(data: any): any {
     if (typeof data === 'string') {
+      // Log original string for debugging
+      if (data.includes('Ã') || data.includes('â')) {
+        console.log('Fixing encoding for:', data);
+      }
+      
       // Try to fix common encoding issues
-      return data
+      const fixed = data
         .replace(/â€™/g, "'")
         .replace(/â€œ/g, '"')
         .replace(/â€/g, '"')
@@ -95,6 +100,13 @@ class ApiClient {
         .replace(/Ãƒ/g, 'Ã')
         .replace(/Ã"/g, 'Ó')
         .replace(/Ãš/g, 'Ú');
+      
+      // Log fixed string for debugging
+      if (fixed !== data) {
+        console.log('Fixed encoding to:', fixed);
+      }
+      
+      return fixed;
     }
     
     if (Array.isArray(data)) {
