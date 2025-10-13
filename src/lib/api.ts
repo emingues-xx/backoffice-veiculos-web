@@ -237,6 +237,13 @@ class ApiClient {
   async validateAndReplaceImages(images: string[]): Promise<string[]> {
     const validImages: string[] = [];
     
+    // Em desenvolvimento/localhost, usar imagens placeholder para evitar problemas de CORS
+    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+    if (isLocalhost || process.env.NODE_ENV === 'development') {
+      console.log('Development mode: using placeholder images to avoid CORS issues');
+      return images.map((_, index) => `https://via.placeholder.com/400x300/cccccc/666666?text=Vehicle+${index + 1}`);
+    }
+    
     for (const imageUrl of images) {
       try {
         // Verificar se é uma URL do Unsplash que pode causar problemas
