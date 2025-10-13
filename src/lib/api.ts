@@ -50,8 +50,9 @@ class ApiClient {
     // Response interceptor
     this.client.interceptors.response.use(
       (response: AxiosResponse) => {
-        // Fix UTF-8 encoding issues
+        // Fix UTF-8 encoding issues - always apply
         if (response.data) {
+          console.log('Applying UTF-8 encoding fix to response data');
           response.data = this.fixUtf8Encoding(response.data);
         }
         return response;
@@ -99,7 +100,14 @@ class ApiClient {
         .replace(/Ã‡/g, 'Ç')
         .replace(/Ãƒ/g, 'Ã')
         .replace(/Ã"/g, 'Ó')
-        .replace(/Ãš/g, 'Ú');
+        .replace(/Ãš/g, 'Ú')
+        // Fix specific characters from the error
+        .replace(/Veculo/g, 'Veículo')
+        .replace(/nico/g, 'único')
+        .replace(/revises/g, 'revisões')
+        .replace(//g, 'í')
+        .replace(//g, 'ú')
+        .replace(//g, 'õ');
       
       // Log fixed string for debugging
       if (fixed !== data) {
