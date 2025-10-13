@@ -2,8 +2,8 @@ import { useAuth } from '@/components/Auth/AuthProvider';
 import React, { useState } from 'react';
 
 export const LoginForm: React.FC = () => {
-  const [email, setEmail] = useState('admin@test.com');
-  const [password, setPassword] = useState('password123');
+  const [email, setEmail] = useState('admin@backoffice.com');
+  const [password, setPassword] = useState('Admin123!@#');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();

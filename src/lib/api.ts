@@ -88,6 +88,7 @@ class ApiClient {
         });
         
         console.log('Login response:', response.data);
+        // API direta retorna { token, user } diretamente
         return response.data;
       }
       
@@ -116,6 +117,12 @@ class ApiClient {
       }
       
       console.log('Login response:', response.data);
+      
+      // BFF retorna { success: true, data: { token, user } }
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      }
+      
       return response.data;
     } catch (error: any) {
       console.error('Login error:', error.response?.data || error.message);

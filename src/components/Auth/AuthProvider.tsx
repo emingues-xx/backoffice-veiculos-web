@@ -39,10 +39,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsAuthenticated(true);
       // Set default user data
       setUser({
-        id: '68d1d34f2dd6f78e64b71fff',
+        id: '68d17845a08df9f982e3397a',
         name: 'Admin User',
-        email: 'admin@test.com',
-        phone: '(11) 99999-9999'
+        email: 'admin@backoffice.com',
+        role: 'admin'
       });
     }
     setIsLoading(false);
@@ -59,10 +59,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setToken(response.token);
       setIsAuthenticated(true);
       setUser(response.user || {
-        id: '68d1d34f2dd6f78e64b71fff',
+        id: '68d17845a08df9f982e3397a',
         name: 'Admin User',
-        email: 'admin@test.com',
-        phone: '(11) 99999-9999'
+        email: 'admin@backoffice.com',
+        role: 'admin'
       });
     } catch (error) {
       console.error('Login error:', error);
