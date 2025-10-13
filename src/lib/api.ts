@@ -104,10 +104,7 @@ class ApiClient {
         // Fix specific characters from the error
         .replace(/Veculo/g, 'Veículo')
         .replace(/nico/g, 'único')
-        .replace(/revises/g, 'revisões')
-        .replace(//g, 'í')
-        .replace(//g, 'ú')
-        .replace(//g, 'õ');
+        .replace(/revises/g, 'revisões');
       
       // Log fixed string for debugging
       if (fixed !== data) {
