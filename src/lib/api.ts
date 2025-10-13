@@ -49,7 +49,13 @@ class ApiClient {
 
     // Response interceptor
     this.client.interceptors.response.use(
-      (response: AxiosResponse) => response,
+      (response: AxiosResponse) => {
+        // Fix UTF-8 encoding issues
+        if (response.data) {
+          response.data = this.fixUtf8Encoding(response.data);
+        }
+        return response;
+      },
       (error) => {
         const apiError: ApiError = {
           message: error.response?.data?.message || error.message || 'An error occurred',
@@ -59,6 +65,51 @@ class ApiClient {
         return Promise.reject(apiError);
       }
     );
+  }
+
+  // Fix UTF-8 encoding issues
+  private fixUtf8Encoding(data: any): any {
+    if (typeof data === 'string') {
+      // Try to fix common encoding issues
+      return data
+        .replace(/â€™/g, "'")
+        .replace(/â€œ/g, '"')
+        .replace(/â€/g, '"')
+        .replace(/â€"/g, '–')
+        .replace(/â€"/g, '—')
+        .replace(/â€¦/g, '…')
+        .replace(/Ã¡/g, 'á')
+        .replace(/Ã©/g, 'é')
+        .replace(/Ã­/g, 'í')
+        .replace(/Ã³/g, 'ó')
+        .replace(/Ãº/g, 'ú')
+        .replace(/Ã¢/g, 'â')
+        .replace(/Ãª/g, 'ê')
+        .replace(/Ã´/g, 'ô')
+        .replace(/Ã /g, 'à')
+        .replace(/Ã§/g, 'ç')
+        .replace(/Ã£/g, 'ã')
+        .replace(/Ãµ/g, 'õ')
+        .replace(/Ã‰/g, 'É')
+        .replace(/Ã‡/g, 'Ç')
+        .replace(/Ãƒ/g, 'Ã')
+        .replace(/Ã"/g, 'Ó')
+        .replace(/Ãš/g, 'Ú');
+    }
+    
+    if (Array.isArray(data)) {
+      return data.map(item => this.fixUtf8Encoding(item));
+    }
+    
+    if (data && typeof data === 'object') {
+      const fixed: any = {};
+      for (const [key, value] of Object.entries(data)) {
+        fixed[key] = this.fixUtf8Encoding(value);
+      }
+      return fixed;
+    }
+    
+    return data;
   }
 
   // Health check
