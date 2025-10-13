@@ -9,18 +9,20 @@ class ApiClient {
   constructor() {
     // Use relative URLs on client side (leverages Next.js rewrites)
     // Use direct BFF URL on server side
+    // In development (localhost), always use direct API to avoid SSL issues
+    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
     const baseURL = typeof window !== 'undefined' 
-      ? '' // Use relative URLs to leverage rewrites
+      ? (isLocalhost ? 'https://backoffice-veiculos-api-production.up.railway.app' : '') // Use direct API on localhost
       : (process.env.BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app');
     
     // Debug log for environment variables
-    if (process.env.NODE_ENV === 'production') {
-      console.log('API Client Configuration:');
-      console.log('- BFF_BASE_URL:', process.env.BFF_BASE_URL);
-      console.log('- NEXT_PUBLIC_BFF_BASE_URL:', process.env.NEXT_PUBLIC_BFF_BASE_URL);
-      console.log('- API_TIMEOUT:', process.env.NEXT_PUBLIC_API_TIMEOUT);
-      console.log('- Base URL:', baseURL);
-    }
+    console.log('API Client Configuration:');
+    console.log('- BFF_BASE_URL:', process.env.BFF_BASE_URL);
+    console.log('- NEXT_PUBLIC_BFF_BASE_URL:', process.env.NEXT_PUBLIC_BFF_BASE_URL);
+    console.log('- API_TIMEOUT:', process.env.NEXT_PUBLIC_API_TIMEOUT);
+    console.log('- NODE_ENV:', process.env.NODE_ENV);
+    console.log('- Is Localhost:', isLocalhost);
+    console.log('- Base URL:', baseURL);
     
     this.client = axios.create({
       baseURL,
@@ -71,8 +73,9 @@ class ApiClient {
       console.log('Attempting login with:', { email, password: '***' });
       console.log('Login URL:', this.client.defaults.baseURL + '/api/users/login');
       
-      // In development, use direct API to avoid SSL/CORS issues
-      if (process.env.NODE_ENV === 'development') {
+      // In development or localhost, use direct API to avoid SSL/CORS issues
+      const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+      if (process.env.NODE_ENV === 'development' || isLocalhost) {
         console.log('Development mode: using direct API');
         const directApiClient = axios.create({
           baseURL: 'https://backoffice-veiculos-api-production.up.railway.app',
