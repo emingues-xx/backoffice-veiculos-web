@@ -101,10 +101,19 @@ class ApiClient {
         .replace(/Ãƒ/g, 'Ã')
         .replace(/Ã"/g, 'Ó')
         .replace(/Ãš/g, 'Ú')
-        // Fix specific characters from the error
+        // Fix replacement characters () with proper UTF-8 characters
         .replace(/Veculo/g, 'Veículo')
         .replace(/nico/g, 'único')
-        .replace(/revises/g, 'revisões');
+        .replace(/revises/g, 'revisões')
+        .replace(/direo/g, 'direção')
+        .replace(/hidrulica/g, 'hidráulica')
+        .replace(/eltricos/g, 'elétricos')
+        .replace(/eltrica/g, 'elétrica')
+        .replace(/seminovo/g, 'seminovo')
+        .replace(/perfeito/g, 'perfeito')
+        .replace(/equipado/g, 'equipado')
+        .replace(/condicionado/g, 'condicionado')
+        .replace(/trava/g, 'trava');
       
       // Log fixed string for debugging
       if (fixed !== data) {
