@@ -235,34 +235,81 @@ class ApiClient {
 
   // Validar e substituir URLs de imagens inválidas
   async validateAndReplaceImages(images: string[]): Promise<string[]> {
-    const validImages: string[] = [];
+    if (!images || images.length === 0) return [];
     
-    // Em desenvolvimento/localhost, usar imagens placeholder para evitar problemas de CORS
-    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-    if (isLocalhost || process.env.NODE_ENV === 'development') {
-      console.log('Development mode: using placeholder images to avoid CORS issues');
-      return images.map((_, index) => `https://via.placeholder.com/400x300/cccccc/666666?text=Vehicle+${index + 1}`);
+    // URLs de imagens que funcionam em dev e prod (sem CORS)
+    const corsFreeImageServices = [
+      'https://picsum.photos/400/300?random=',
+      'https://via.placeholder.com/400x300/cccccc/666666?text=Vehicle+',
+      'https://images.unsplash.com/photo-',
+      'https://source.unsplash.com/400x300/?car,',
+      'https://picsum.photos/400/300?grayscale&random='
+    ];
+    
+    // Se não há imagens válidas ou são URLs problemáticas, usar imagens CORS-free
+    const hasValidImages = images.some(img => 
+      img && 
+      !img.includes('webmotors.com.br') && 
+      !img.includes('images.unsplash.com') &&
+      (img.startsWith('https://') || img.startsWith('http://'))
+    );
+    
+    if (!hasValidImages || images.length === 0) {
+      console.log('Using CORS-free images for better compatibility');
+      return images.map((_, index) => {
+        const serviceIndex = index % corsFreeImageServices.length;
+        const baseUrl = corsFreeImageServices[serviceIndex];
+        
+        if (baseUrl.includes('picsum.photos')) {
+          return `${baseUrl}${index + 1}`;
+        } else if (baseUrl.includes('placeholder.com')) {
+          return `${baseUrl}${index + 1}`;
+        } else if (baseUrl.includes('unsplash.com')) {
+          return `${baseUrl}${index + 1}`;
+        } else {
+          return `${baseUrl}${index + 1}`;
+        }
+      });
     }
     
+    // Se há imagens válidas, tentar validar (apenas em produção)
+    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+    if (isLocalhost || process.env.NODE_ENV === 'development') {
+      console.log('Development mode: using CORS-free images');
+      return images.map((_, index) => {
+        const serviceIndex = index % corsFreeImageServices.length;
+        const baseUrl = corsFreeImageServices[serviceIndex];
+        return `${baseUrl}${index + 1}`;
+      });
+    }
+    
+    // Em produção, tentar validar as imagens originais
+    const validImages: string[] = [];
     for (const imageUrl of images) {
       try {
-        // Verificar se é uma URL do Unsplash que pode causar problemas
-        if (imageUrl.includes('images.unsplash.com')) {
-          // Substituir por uma imagem placeholder válida
-          validImages.push('https://via.placeholder.com/400x300/cccccc/666666?text=Imagem+do+Veículo');
+        // Verificar se é uma URL problemática
+        if (imageUrl.includes('webmotors.com.br') || imageUrl.includes('images.unsplash.com')) {
+          // Substituir por uma imagem CORS-free
+          const serviceIndex = validImages.length % corsFreeImageServices.length;
+          const baseUrl = corsFreeImageServices[serviceIndex];
+          validImages.push(`${baseUrl}${validImages.length + 1}`);
         } else {
           // Testar se a imagem é acessível
           const response = await fetch(imageUrl, { method: 'HEAD' });
           if (response.ok) {
             validImages.push(imageUrl);
           } else {
-            // Substituir por placeholder se não for acessível
-            validImages.push('https://via.placeholder.com/400x300/cccccc/666666?text=Imagem+do+Veículo');
+            // Substituir por imagem CORS-free
+            const serviceIndex = validImages.length % corsFreeImageServices.length;
+            const baseUrl = corsFreeImageServices[serviceIndex];
+            validImages.push(`${baseUrl}${validImages.length + 1}`);
           }
         }
       } catch (error) {
-        // Em caso de erro, usar placeholder
-        validImages.push('https://via.placeholder.com/400x300/cccccc/666666?text=Imagem+do+Veículo');
+        // Em caso de erro, usar imagem CORS-free
+        const serviceIndex = validImages.length % corsFreeImageServices.length;
+        const baseUrl = corsFreeImageServices[serviceIndex];
+        validImages.push(`${baseUrl}${validImages.length + 1}`);
       }
     }
     
