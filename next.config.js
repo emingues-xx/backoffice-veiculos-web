@@ -11,6 +11,25 @@ const nextConfig = {
     // Disable TypeScript errors during builds in production
     ignoreBuildErrors: process.env.NODE_ENV === 'production',
   },
+  
+  // Configurações de encoding
+  generateEtags: false,
+  poweredByHeader: false,
+  
+  // Headers para UTF-8
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'text/html; charset=utf-8',
+          },
+        ],
+      },
+    ];
+  },
   env: {
     BFF_BASE_URL: process.env.BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app',
     NEXT_PUBLIC_BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app',
