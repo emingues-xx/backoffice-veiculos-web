@@ -109,9 +109,6 @@ class ApiClient {
         .replace(/hidrulica/g, 'hidráulica')
         .replace(/eltricos/g, 'elétricos')
         .replace(/eltrica/g, 'elétrica')
-        .replace(/seminovo/g, 'seminovo')
-        .replace(/perfeito/g, 'perfeito')
-        .replace(/equipado/g, 'equipado')
         .replace(/condicionado/g, 'condicionado')
         .replace(/trava/g, 'trava');
       
