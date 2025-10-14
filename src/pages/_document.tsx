@@ -239,6 +239,116 @@ export default function Document() {
             .disabled\\:cursor-not-allowed:disabled {
               cursor: not-allowed !important;
             }
+            
+            /* Layout specific classes */
+            .grid {
+              display: grid !important;
+            }
+            
+            .grid-cols-1 {
+              grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+            }
+            
+            .gap-6 {
+              gap: 1.5rem !important;
+            }
+            
+            .bg-gray-50 {
+              background-color: #f9fafb !important;
+            }
+            
+            .bg-white {
+              background-color: white !important;
+            }
+            
+            .text-gray-900 {
+              color: #111827 !important;
+            }
+            
+            .text-gray-600 {
+              color: #4b5563 !important;
+            }
+            
+            .text-gray-500 {
+              color: #6b7280 !important;
+            }
+            
+            .text-sm {
+              font-size: 0.875rem !important;
+              line-height: 1.25rem !important;
+            }
+            
+            .text-lg {
+              font-size: 1.125rem !important;
+              line-height: 1.75rem !important;
+            }
+            
+            .text-xl {
+              font-size: 1.25rem !important;
+              line-height: 1.75rem !important;
+            }
+            
+            .text-2xl {
+              font-size: 1.5rem !important;
+              line-height: 2rem !important;
+            }
+            
+            .text-3xl {
+              font-size: 1.875rem !important;
+              line-height: 2.25rem !important;
+            }
+            
+            .font-semibold {
+              font-weight: 600 !important;
+            }
+            
+            .font-bold {
+              font-weight: 700 !important;
+            }
+            
+            .p-6 {
+              padding: 1.5rem !important;
+            }
+            
+            .px-6 {
+              padding-left: 1.5rem !important;
+              padding-right: 1.5rem !important;
+            }
+            
+            .py-4 {
+              padding-top: 1rem !important;
+              padding-bottom: 1rem !important;
+            }
+            
+            .mb-8 {
+              margin-bottom: 2rem !important;
+            }
+            
+            .mt-8 {
+              margin-top: 2rem !important;
+            }
+            
+            .rounded-lg {
+              border-radius: 0.5rem !important;
+            }
+            
+            .shadow {
+              box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
+            }
+            
+            .hover\\:bg-gray-100:hover {
+              background-color: #f3f4f6 !important;
+            }
+            
+            .cursor-pointer {
+              cursor: pointer !important;
+            }
+            
+            .transition-colors {
+              transition-property: color, background-color, border-color, text-decoration-color, fill, stroke !important;
+              transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+              transition-duration: 0.15s !important;
+            }
           `
         }} />
       </Head>
