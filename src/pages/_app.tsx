@@ -1,5 +1,6 @@
 import { AuthProvider } from '@/components/Auth/AuthProvider';
 import { Layout } from '@/components/Layout/Layout';
+import { ProductionDebug } from '@/components/Debug/ProductionDebug';
 import '@/styles/globals.css';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -24,6 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Component {...pageProps} />
+        <ProductionDebug />
         <ReactQueryDevtools initialIsOpen={false} />
       </AuthProvider>
     </QueryClientProvider>
