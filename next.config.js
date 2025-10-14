@@ -12,6 +12,22 @@ const nextConfig = {
     ignoreBuildErrors: process.env.NODE_ENV === 'production',
   },
   
+  // CSS and styling configurations
+  experimental: {
+    optimizeCss: true,
+  },
+  
+  // Ensure CSS is properly processed
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+      };
+    }
+    return config;
+  },
+  
   // Configurações de encoding
   generateEtags: false,
   poweredByHeader: false,
