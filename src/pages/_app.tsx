@@ -1,6 +1,7 @@
 import { AuthProvider } from '@/components/Auth/AuthProvider';
 import { Layout } from '@/components/Layout/Layout';
 import '@/styles/globals.css';
+import '@/styles/test.css';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
