@@ -1,5 +1,5 @@
 import { ApiError, ApiResponse, HealthCheck } from '@/types/api';
-import { DashboardMetrics, SalesResponse } from '@/types/dashboard';
+import { DashboardMetrics, SalesResponse, CreateSaleRequest, UpdateSaleRequest, SaleFilters, SalesStats } from '@/types/dashboard';
 import { CreateVehicleRequest, UpdateVehicleRequest, Vehicle, VehicleFilters, VehicleListResponse } from '@/types/vehicle';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
@@ -9,18 +9,20 @@ class ApiClient {
   constructor() {
     // Use relative URLs on client side (leverages Next.js rewrites)
     // Use direct BFF URL on server side
+    // In development (localhost), always use direct API to avoid SSL issues
+    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
     const baseURL = typeof window !== 'undefined' 
-      ? '' // Use relative URLs to leverage rewrites
-      : (process.env.BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app');
+      ? (isLocalhost ? 'https://bff-production-cae3.up.railway.app' : '') // Use BFF on localhost
+      : (process.env.BFF_BASE_URL || 'https://bff-production-cae3.up.railway.app');
     
     // Debug log for environment variables
-    if (process.env.NODE_ENV === 'production') {
-      console.log('API Client Configuration:');
-      console.log('- BFF_BASE_URL:', process.env.BFF_BASE_URL);
-      console.log('- NEXT_PUBLIC_BFF_BASE_URL:', process.env.NEXT_PUBLIC_BFF_BASE_URL);
-      console.log('- API_TIMEOUT:', process.env.NEXT_PUBLIC_API_TIMEOUT);
-      console.log('- Base URL:', baseURL);
-    }
+    console.log('API Client Configuration:');
+    console.log('- BFF_BASE_URL:', process.env.BFF_BASE_URL);
+    console.log('- NEXT_PUBLIC_BFF_BASE_URL:', process.env.NEXT_PUBLIC_BFF_BASE_URL);
+    console.log('- API_TIMEOUT:', process.env.NEXT_PUBLIC_API_TIMEOUT);
+    console.log('- NODE_ENV:', process.env.NODE_ENV);
+    console.log('- Is Localhost:', isLocalhost);
+    console.log('- Base URL:', baseURL);
     
     this.client = axios.create({
       baseURL,
@@ -47,7 +49,9 @@ class ApiClient {
 
     // Response interceptor
     this.client.interceptors.response.use(
-      (response: AxiosResponse) => response,
+      (response: AxiosResponse) => {
+        return response;
+      },
       (error) => {
         const apiError: ApiError = {
           message: error.response?.data?.message || error.message || 'An error occurred',
@@ -58,6 +62,7 @@ class ApiClient {
       }
     );
   }
+
 
   // Health check
   async healthCheck(): Promise<HealthCheck> {
@@ -71,10 +76,35 @@ class ApiClient {
       console.log('Attempting login with:', { email, password: '***' });
       console.log('Login URL:', this.client.defaults.baseURL + '/api/users/login');
       
-      // Try BFF endpoint first
+      // In development or localhost, use direct API for login
+      const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+      if (process.env.NODE_ENV === 'development' || isLocalhost) {
+        console.log('Development mode: using direct API for login');
+        const directApiClient = axios.create({
+          baseURL: 'https://backoffice-veiculos-api-production.up.railway.app',
+          timeout: parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '10000'),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        const response = await directApiClient.post<any>('/api/users/login', {
+          email,
+          password,
+        });
+        
+        console.log('Login response:', response.data);
+        // API direta retorna { success: true, data: { token, user } }
+        if (response.data.success && response.data.data) {
+          return response.data.data;
+        }
+        return response.data;
+      }
+      
+      // In production, try BFF first, then fallback to direct API
       let response;
       try {
-        response = await this.client.post<any>('/api/users/login', {
+        response = await this.client.post<any>('/api/auth/login', {
           email,
           password,
         });
@@ -96,6 +126,12 @@ class ApiClient {
       }
       
       console.log('Login response:', response.data);
+      
+      // BFF retorna { success: true, data: { token, user } }
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      }
+      
       return response.data;
     } catch (error: any) {
       console.error('Login error:', error.response?.data || error.message);
@@ -177,17 +213,105 @@ class ApiClient {
     await this.client.delete(`/api/vehicles/${id}`);
   }
 
+  async updateVehicleStatus(id: string, status: 'active' | 'inactive' | 'sold'): Promise<Vehicle> {
+    const response = await this.client.patch<any>(`/api/vehicles/${id}/status`, { status });
+    return response.data.data || response.data;
+  }
+
+  async getVehicleStats(): Promise<any> {
+    const response = await this.client.get<any>('/api/vehicles/dashboard/stats');
+    return response.data.data || response.data;
+  }
+
+  async searchVehicles(query: string): Promise<VehicleListResponse> {
+    const response = await this.client.get<any>('/api/vehicles/search', {
+      params: { q: query },
+    });
+    
+    return {
+      vehicles: response.data.data?.data || response.data.data || response.data.vehicles || [],
+      total: response.data.data?.pagination?.total || response.data.pagination?.total || response.data.total || 0,
+      page: response.data.data?.pagination?.page || response.data.pagination?.page || response.data.page || 1,
+      limit: response.data.data?.pagination?.limit || response.data.pagination?.limit || response.data.limit || 25,
+      totalPages: response.data.data?.pagination?.totalPages || response.data.pagination?.totalPages || response.data.totalPages || 0
+    };
+  }
+
+  async getVehiclesBySeller(sellerId: string): Promise<VehicleListResponse> {
+    const response = await this.client.get<any>(`/api/vehicles/seller/${sellerId}`);
+    
+    return {
+      vehicles: response.data.data?.data || response.data.data || response.data.vehicles || [],
+      total: response.data.data?.pagination?.total || response.data.pagination?.total || response.data.total || 0,
+      page: response.data.data?.pagination?.page || response.data.pagination?.page || response.data.page || 1,
+      limit: response.data.data?.pagination?.limit || response.data.pagination?.limit || response.data.limit || 25,
+      totalPages: response.data.data?.pagination?.totalPages || response.data.pagination?.totalPages || response.data.totalPages || 0
+    };
+  }
+
   // Dashboard
   async getDashboardMetrics(): Promise<DashboardMetrics> {
     const response = await this.client.get<ApiResponse<DashboardMetrics>>('/api/dashboard/metrics');
     return response.data.data;
   }
 
-  async getSales(filters?: { page?: number; limit?: number; startDate?: string; endDate?: string }): Promise<SalesResponse> {
-    const response = await this.client.get<ApiResponse<SalesResponse>>('/api/sales', {
+  // Sales
+  async getSales(filters?: SaleFilters): Promise<SalesResponse> {
+    console.log('API getSales: Fetching with filters:', filters);
+    const response = await this.client.get<any>('/api/sales', {
       params: filters,
     });
-    return response.data.data;
+    
+    console.log('API getSales: Raw response:', response.data);
+    console.log('API getSales: response.data.data:', response.data.data);
+    console.log('API getSales: response.data.data?.sales:', response.data.data?.sales);
+    console.log('API getSales: response.data.data?.pagination:', response.data.data?.pagination);
+    
+    const result = {
+      sales: response.data.data?.data?.sales || [],
+      total: response.data.data?.data?.pagination?.total || 0,
+      page: response.data.data?.data?.pagination?.page || 1,
+      limit: response.data.data?.data?.pagination?.limit || 25,
+      totalPages: response.data.data?.data?.pagination?.pages || 0
+    };
+    
+    console.log('API getSales: Processed result:', result);
+    return result;
+  }
+
+  async getSale(id: string): Promise<any> {
+    const response = await this.client.get<any>(`/api/sales/${id}`);
+    return response.data.data || response.data;
+  }
+
+  async createSale(data: CreateSaleRequest): Promise<any> {
+    const response = await this.client.post<any>('/api/sales', data);
+    return response.data.data || response.data;
+  }
+
+  async updateSale(id: string, data: UpdateSaleRequest): Promise<any> {
+    const response = await this.client.put<any>(`/api/sales/${id}`, data);
+    return response.data.data || response.data;
+  }
+
+  async deleteSale(id: string): Promise<void> {
+    await this.client.delete(`/api/sales/${id}`);
+  }
+
+  async getSalesStats(): Promise<SalesStats> {
+    const response = await this.client.get<any>('/api/sales/stats');
+    return response.data.data || response.data;
+  }
+
+  async getMySales(): Promise<SalesResponse> {
+    const response = await this.client.get<any>('/api/sales/my-sales');
+    return {
+      sales: response.data.data?.data || response.data.data || response.data.sales || [],
+      total: response.data.data?.pagination?.total || response.data.pagination?.total || response.data.total || 0,
+      page: response.data.data?.pagination?.page || response.data.pagination?.page || response.data.page || 1,
+      limit: response.data.data?.pagination?.limit || response.data.pagination?.limit || response.data.limit || 25,
+      totalPages: response.data.data?.pagination?.totalPages || response.data.pagination?.totalPages || response.data.totalPages || 0
+    };
   }
 
   // Upload de imagens
@@ -205,27 +329,81 @@ class ApiClient {
 
   // Validar e substituir URLs de imagens inválidas
   async validateAndReplaceImages(images: string[]): Promise<string[]> {
-    const validImages: string[] = [];
+    if (!images || images.length === 0) return [];
     
+    // URLs de imagens que funcionam em dev e prod (sem CORS)
+    const corsFreeImageServices = [
+      'https://picsum.photos/400/300?random=',
+      'https://via.placeholder.com/400x300/cccccc/666666?text=Vehicle+',
+      'https://images.unsplash.com/photo-',
+      'https://source.unsplash.com/400x300/?car,',
+      'https://picsum.photos/400/300?grayscale&random='
+    ];
+    
+    // Se não há imagens válidas ou são URLs problemáticas, usar imagens CORS-free
+    const hasValidImages = images.some(img => 
+      img && 
+      !img.includes('webmotors.com.br') && 
+      !img.includes('images.unsplash.com') &&
+      (img.startsWith('https://') || img.startsWith('http://'))
+    );
+    
+    if (!hasValidImages || images.length === 0) {
+      console.log('Using CORS-free images for better compatibility');
+      return images.map((_, index) => {
+        const serviceIndex = index % corsFreeImageServices.length;
+        const baseUrl = corsFreeImageServices[serviceIndex];
+        
+        if (baseUrl.includes('picsum.photos')) {
+          return `${baseUrl}${index + 1}`;
+        } else if (baseUrl.includes('placeholder.com')) {
+          return `${baseUrl}${index + 1}`;
+        } else if (baseUrl.includes('unsplash.com')) {
+          return `${baseUrl}${index + 1}`;
+        } else {
+          return `${baseUrl}${index + 1}`;
+        }
+      });
+    }
+    
+    // Se há imagens válidas, tentar validar (apenas em produção)
+    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+    if (isLocalhost || process.env.NODE_ENV === 'development') {
+      console.log('Development mode: using CORS-free images');
+      return images.map((_, index) => {
+        const serviceIndex = index % corsFreeImageServices.length;
+        const baseUrl = corsFreeImageServices[serviceIndex];
+        return `${baseUrl}${index + 1}`;
+      });
+    }
+    
+    // Em produção, tentar validar as imagens originais
+    const validImages: string[] = [];
     for (const imageUrl of images) {
       try {
-        // Verificar se é uma URL do Unsplash que pode causar problemas
-        if (imageUrl.includes('images.unsplash.com')) {
-          // Substituir por uma imagem placeholder válida
-          validImages.push('https://via.placeholder.com/400x300/cccccc/666666?text=Imagem+do+Veículo');
+        // Verificar se é uma URL problemática
+        if (imageUrl.includes('webmotors.com.br') || imageUrl.includes('images.unsplash.com')) {
+          // Substituir por uma imagem CORS-free
+          const serviceIndex = validImages.length % corsFreeImageServices.length;
+          const baseUrl = corsFreeImageServices[serviceIndex];
+          validImages.push(`${baseUrl}${validImages.length + 1}`);
         } else {
           // Testar se a imagem é acessível
           const response = await fetch(imageUrl, { method: 'HEAD' });
           if (response.ok) {
             validImages.push(imageUrl);
           } else {
-            // Substituir por placeholder se não for acessível
-            validImages.push('https://via.placeholder.com/400x300/cccccc/666666?text=Imagem+do+Veículo');
+            // Substituir por imagem CORS-free
+            const serviceIndex = validImages.length % corsFreeImageServices.length;
+            const baseUrl = corsFreeImageServices[serviceIndex];
+            validImages.push(`${baseUrl}${validImages.length + 1}`);
           }
         }
       } catch (error) {
-        // Em caso de erro, usar placeholder
-        validImages.push('https://via.placeholder.com/400x300/cccccc/666666?text=Imagem+do+Veículo');
+        // Em caso de erro, usar imagem CORS-free
+        const serviceIndex = validImages.length % corsFreeImageServices.length;
+        const baseUrl = corsFreeImageServices[serviceIndex];
+        validImages.push(`${baseUrl}${validImages.length + 1}`);
       }
     }
     

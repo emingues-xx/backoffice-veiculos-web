@@ -5,14 +5,16 @@ export interface Vehicle {
   year: number;
   price: number;
   mileage: number;
-  fuelType: 'gasoline' | 'diesel' | 'electric' | 'hybrid';
+  fuelType: 'gasoline' | 'diesel' | 'electric' | 'hybrid' | 'ethanol';
   transmission: 'manual' | 'automatic';
   color: string;
   doors: number;
   category: 'car' | 'motorcycle' | 'truck' | 'van';
   condition: 'new' | 'used';
+  status?: 'active' | 'inactive' | 'sold';
   description: string;
   images: string[];
+  features?: string[];
   location: {
     city: string;
     state: string;
@@ -25,6 +27,7 @@ export interface Vehicle {
     email: string;
   };
   isFeatured: boolean;
+  views?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -43,6 +46,7 @@ export interface CreateVehicleRequest {
   condition: Vehicle['condition'];
   description: string;
   images: string[];
+  features?: string[];
   location: Vehicle['location'];
   seller: Vehicle['seller'];
   isFeatured: boolean;
@@ -61,7 +65,11 @@ export interface VehicleFilters {
   transmission?: Vehicle['transmission'];
   category?: Vehicle['category'];
   condition?: Vehicle['condition'];
+  status?: Vehicle['status'];
+  sellerId?: string;
   search?: string;
+  sortBy?: 'price' | 'year' | 'mileage' | 'createdAt';
+  sortOrder?: 'asc' | 'desc';
 }
 
 export interface VehicleListResponse {

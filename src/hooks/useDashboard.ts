@@ -32,7 +32,12 @@ export const useDashboardMetrics = () => {
 export const useSales = (filters?: { page?: number; limit?: number; startDate?: string; endDate?: string }) => {
   return useQuery<SalesResponse, Error>(
     ['sales', filters],
-    () => apiClient.getSales(filters),
+    async () => {
+      console.log('useSales: Fetching sales with filters:', filters);
+      const result = await apiClient.getSales(filters);
+      console.log('useSales: API result:', result);
+      return result;
+    },
     {
       keepPreviousData: true,
       staleTime: 5 * 60 * 1000, // 5 minutes
