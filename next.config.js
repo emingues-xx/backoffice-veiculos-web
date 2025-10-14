@@ -13,9 +13,9 @@ const nextConfig = {
   },
   
   // CSS and styling configurations
-  experimental: {
-    optimizeCss: true,
-  },
+  // experimental: {
+  //   optimizeCss: true, // Removed - causes critters module error
+  // },
   
   // Ensure CSS is properly processed
   webpack: (config, { isServer }) => {
