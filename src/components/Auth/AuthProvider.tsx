@@ -34,6 +34,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     // Check if there's a token in localStorage
     const savedToken = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
+    console.log('AuthProvider: Checking saved token:', savedToken ? 'Token found' : 'No token');
+    
     if (savedToken) {
       setToken(savedToken);
       setIsAuthenticated(true);
@@ -44,16 +46,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email: 'admin@backoffice.com',
         role: 'admin'
       });
+      console.log('AuthProvider: User authenticated with saved token');
+    } else {
+      console.log('AuthProvider: No saved token, showing login form');
     }
     setIsLoading(false);
   }, []);
 
   const login = async (credentials: { email: string; password: string }) => {
     try {
+      console.log('AuthProvider: Attempting login with:', credentials.email);
       const response = await apiClient.login(credentials.email, credentials.password);
+      console.log('AuthProvider: Login successful, response:', response);
       
       if (typeof window !== 'undefined') {
         localStorage.setItem('auth_token', response.token);
+        console.log('AuthProvider: Token saved to localStorage');
       }
       
       setToken(response.token);
@@ -64,6 +72,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email: 'admin@backoffice.com',
         role: 'admin'
       });
+      console.log('AuthProvider: User state updated, should show layout now');
     } catch (error) {
       console.error('Login error:', error);
       throw error;
