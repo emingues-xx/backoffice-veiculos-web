@@ -34,7 +34,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     // Check if there's a token in localStorage
     const savedToken = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null;
-    console.log('AuthProvider: Checking saved token:', savedToken ? 'Token found' : 'No token');
     
     if (savedToken) {
       setToken(savedToken);
@@ -46,9 +45,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         email: 'admin@backoffice.com',
         role: 'admin'
       });
-      console.log('AuthProvider: User authenticated with saved token');
-    } else {
-      console.log('AuthProvider: No saved token, showing login form');
     }
     setIsLoading(false);
   }, []);
