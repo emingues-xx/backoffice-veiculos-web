@@ -63,8 +63,8 @@ cp env.example .env.local
 Edite o arquivo `.env.local` com suas configurações:
 ```env
 # URLs do BFF
-NEXT_PUBLIC_BFF_BASE_URL=https://bff-production-cae3.up.railway.app
-BFF_BASE_URL=https://bff-production-cae3.up.railway.app
+NEXT_PUBLIC_BFF_BASE_URL=https://bff-production-cae3.up.railway.app/
+BFF_BASE_URL=https://backoffice-veiculos-bff-production.up.railway.app
 
 # Configurações da API
 NEXT_PUBLIC_API_TIMEOUT=10000
@@ -142,7 +142,8 @@ npm run type-check
 O sistema se conecta ao Backend for Frontend (BFF) em produção através das seguintes APIs:
 
 ### 🔗 URLs de Produção
-- **BFF**: `https://bff-production-cae3.up.railway.app`
+- **BFF Principal**: `https://bff-production-cae3.up.railway.app/`
+- **BFF Secundário**: `https://backoffice-veiculos-bff-production.up.railway.app`
 - **API Direta**: `https://backoffice-veiculos-api-production.up.railway.app`
 
 ### 📡 Endpoints Utilizados
@@ -241,8 +242,8 @@ O sistema está configurado para deploy automático no Railway:
 npm run build
 
 # Variáveis de ambiente no Railway
-NEXT_PUBLIC_BFF_BASE_URL=https://bff-production-cae3.up.railway.app
-BFF_BASE_URL=https://bff-production-cae3.up.railway.app
+NEXT_PUBLIC_BFF_BASE_URL=https://bff-production-cae3.up.railway.app/
+BFF_BASE_URL=https://backoffice-veiculos-bff-production.up.railway.app
 NEXT_PUBLIC_API_TIMEOUT=10000
 NODE_ENV=production
 ```
@@ -263,8 +264,8 @@ docker run -p 3000:3000 \
 ### Variáveis de Ambiente Completas
 ```env
 # URLs do BFF
-NEXT_PUBLIC_BFF_BASE_URL=https://bff-production-cae3.up.railway.app
-BFF_BASE_URL=https://bff-production-cae3.up.railway.app
+NEXT_PUBLIC_BFF_BASE_URL=https://bff-production-cae3.up.railway.app/
+BFF_BASE_URL=https://backoffice-veiculos-bff-production.up.railway.app
 
 # Configurações da API
 NEXT_PUBLIC_API_TIMEOUT=10000

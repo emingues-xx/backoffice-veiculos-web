@@ -12,7 +12,7 @@ class ApiClient {
     // In development (localhost), always use direct API to avoid SSL issues
     const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
     const baseURL = typeof window !== 'undefined' 
-      ? (isLocalhost ? 'https://bff-production-cae3.up.railway.app' : '') // Use BFF on localhost
+      ? (isLocalhost ? 'https://bff-production-cae3.up.railway.app' : process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://bff-production-cae3.up.railway.app/')
       : (process.env.BFF_BASE_URL || 'https://bff-production-cae3.up.railway.app');
     
     // Debug log for environment variables
