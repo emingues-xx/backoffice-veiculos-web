@@ -30,11 +30,11 @@ const nextConfig = {
       },
     ];
   },
-  env: {
-    BFF_BASE_URL: process.env.BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app',
-    NEXT_PUBLIC_BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app',
-    NEXT_PUBLIC_API_TIMEOUT: process.env.NEXT_PUBLIC_API_TIMEOUT || '10000',
-  },
+env: {
+  BFF_BASE_URL: process.env.BFF_BASE_URL || 'https://bff-production-cae3.up.railway.app',
+  NEXT_PUBLIC_BFF_BASE_URL: process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://bff-production-cae3.up.railway.app',
+  NEXT_PUBLIC_API_TIMEOUT: process.env.NEXT_PUBLIC_API_TIMEOUT || '10000',
+},
   images: {
     remotePatterns: [
       {
@@ -57,20 +57,20 @@ const nextConfig = {
       },
     ],
   },
-  async rewrites() {
-    const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app';
-    
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${bffBaseUrl}/api/:path*`,
-      },
-      {
-        source: '/health',
-        destination: `${bffBaseUrl}/health`,
-      },
-    ];
-  },
+async rewrites() {
+  const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL || 'https://bff-production-cae3.up.railway.app';
+  
+  return [
+    {
+      source: '/api/:path*',
+      destination: `${bffBaseUrl}/api/:path*`,
+    },
+    {
+      source: '/health',
+      destination: `${bffBaseUrl}/health`,
+    },
+  ];
+},
   
   // Configurações para desenvolvimento local
   ...(process.env.NODE_ENV === 'development' && {

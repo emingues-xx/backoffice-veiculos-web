@@ -1,5 +1,5 @@
 import { ApiError, ApiResponse, HealthCheck } from '@/types/api';
-import { DashboardMetrics, SalesResponse } from '@/types/dashboard';
+import { DashboardMetrics, SalesResponse, CreateSaleRequest, UpdateSaleRequest, SaleFilters, SalesStats } from '@/types/dashboard';
 import { CreateVehicleRequest, UpdateVehicleRequest, Vehicle, VehicleFilters, VehicleListResponse } from '@/types/vehicle';
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 
@@ -12,8 +12,8 @@ class ApiClient {
     // In development (localhost), always use direct API to avoid SSL issues
     const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
     const baseURL = typeof window !== 'undefined' 
-      ? (isLocalhost ? 'https://backoffice-veiculos-api-production.up.railway.app' : '') // Use direct API on localhost
-      : (process.env.BFF_BASE_URL || 'https://backoffice-veiculos-bff-production.up.railway.app');
+      ? (isLocalhost ? 'https://bff-production-cae3.up.railway.app' : '') // Use BFF on localhost
+      : (process.env.BFF_BASE_URL || 'https://bff-production-cae3.up.railway.app');
     
     // Debug log for environment variables
     console.log('API Client Configuration:');
@@ -50,11 +50,6 @@ class ApiClient {
     // Response interceptor
     this.client.interceptors.response.use(
       (response: AxiosResponse) => {
-        // Fix UTF-8 encoding issues - always apply
-        if (response.data) {
-          console.log('Applying UTF-8 encoding fix to response data');
-          response.data = this.fixUtf8Encoding(response.data);
-        }
         return response;
       },
       (error) => {
@@ -68,72 +63,6 @@ class ApiClient {
     );
   }
 
-  // Fix UTF-8 encoding issues
-  private fixUtf8Encoding(data: any): any {
-    if (typeof data === 'string') {
-      // Log original string for debugging
-      if (data.includes('Ã') || data.includes('â')) {
-        console.log('Fixing encoding for:', data);
-      }
-      
-      // Try to fix common encoding issues
-      const fixed = data
-        .replace(/â€™/g, "'")
-        .replace(/â€œ/g, '"')
-        .replace(/â€/g, '"')
-        .replace(/â€"/g, '–')
-        .replace(/â€"/g, '—')
-        .replace(/â€¦/g, '…')
-        .replace(/Ã¡/g, 'á')
-        .replace(/Ã©/g, 'é')
-        .replace(/Ã­/g, 'í')
-        .replace(/Ã³/g, 'ó')
-        .replace(/Ãº/g, 'ú')
-        .replace(/Ã¢/g, 'â')
-        .replace(/Ãª/g, 'ê')
-        .replace(/Ã´/g, 'ô')
-        .replace(/Ã /g, 'à')
-        .replace(/Ã§/g, 'ç')
-        .replace(/Ã£/g, 'ã')
-        .replace(/Ãµ/g, 'õ')
-        .replace(/Ã‰/g, 'É')
-        .replace(/Ã‡/g, 'Ç')
-        .replace(/Ãƒ/g, 'Ã')
-        .replace(/Ã"/g, 'Ó')
-        .replace(/Ãš/g, 'Ú')
-        // Fix replacement characters () with proper UTF-8 characters
-        .replace(/Veculo/g, 'Veículo')
-        .replace(/nico/g, 'único')
-        .replace(/revises/g, 'revisões')
-        .replace(/direo/g, 'direção')
-        .replace(/hidrulica/g, 'hidráulica')
-        .replace(/eltricos/g, 'elétricos')
-        .replace(/eltrica/g, 'elétrica')
-        .replace(/condicionado/g, 'condicionado')
-        .replace(/trava/g, 'trava');
-      
-      // Log fixed string for debugging
-      if (fixed !== data) {
-        console.log('Fixed encoding to:', fixed);
-      }
-      
-      return fixed;
-    }
-    
-    if (Array.isArray(data)) {
-      return data.map(item => this.fixUtf8Encoding(item));
-    }
-    
-    if (data && typeof data === 'object') {
-      const fixed: any = {};
-      for (const [key, value] of Object.entries(data)) {
-        fixed[key] = this.fixUtf8Encoding(value);
-      }
-      return fixed;
-    }
-    
-    return data;
-  }
 
   // Health check
   async healthCheck(): Promise<HealthCheck> {
@@ -147,10 +76,10 @@ class ApiClient {
       console.log('Attempting login with:', { email, password: '***' });
       console.log('Login URL:', this.client.defaults.baseURL + '/api/users/login');
       
-      // In development or localhost, use direct API to avoid SSL/CORS issues
+      // In development or localhost, use direct API for login
       const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
       if (process.env.NODE_ENV === 'development' || isLocalhost) {
-        console.log('Development mode: using direct API');
+        console.log('Development mode: using direct API for login');
         const directApiClient = axios.create({
           baseURL: 'https://backoffice-veiculos-api-production.up.railway.app',
           timeout: parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || '10000'),
@@ -165,7 +94,10 @@ class ApiClient {
         });
         
         console.log('Login response:', response.data);
-        // API direta retorna { token, user } diretamente
+        // API direta retorna { success: true, data: { token, user } }
+        if (response.data.success && response.data.data) {
+          return response.data.data;
+        }
         return response.data;
       }
       
@@ -281,17 +213,105 @@ class ApiClient {
     await this.client.delete(`/api/vehicles/${id}`);
   }
 
+  async updateVehicleStatus(id: string, status: 'active' | 'inactive' | 'sold'): Promise<Vehicle> {
+    const response = await this.client.patch<any>(`/api/vehicles/${id}/status`, { status });
+    return response.data.data || response.data;
+  }
+
+  async getVehicleStats(): Promise<any> {
+    const response = await this.client.get<any>('/api/vehicles/dashboard/stats');
+    return response.data.data || response.data;
+  }
+
+  async searchVehicles(query: string): Promise<VehicleListResponse> {
+    const response = await this.client.get<any>('/api/vehicles/search', {
+      params: { q: query },
+    });
+    
+    return {
+      vehicles: response.data.data?.data || response.data.data || response.data.vehicles || [],
+      total: response.data.data?.pagination?.total || response.data.pagination?.total || response.data.total || 0,
+      page: response.data.data?.pagination?.page || response.data.pagination?.page || response.data.page || 1,
+      limit: response.data.data?.pagination?.limit || response.data.pagination?.limit || response.data.limit || 25,
+      totalPages: response.data.data?.pagination?.totalPages || response.data.pagination?.totalPages || response.data.totalPages || 0
+    };
+  }
+
+  async getVehiclesBySeller(sellerId: string): Promise<VehicleListResponse> {
+    const response = await this.client.get<any>(`/api/vehicles/seller/${sellerId}`);
+    
+    return {
+      vehicles: response.data.data?.data || response.data.data || response.data.vehicles || [],
+      total: response.data.data?.pagination?.total || response.data.pagination?.total || response.data.total || 0,
+      page: response.data.data?.pagination?.page || response.data.pagination?.page || response.data.page || 1,
+      limit: response.data.data?.pagination?.limit || response.data.pagination?.limit || response.data.limit || 25,
+      totalPages: response.data.data?.pagination?.totalPages || response.data.pagination?.totalPages || response.data.totalPages || 0
+    };
+  }
+
   // Dashboard
   async getDashboardMetrics(): Promise<DashboardMetrics> {
     const response = await this.client.get<ApiResponse<DashboardMetrics>>('/api/dashboard/metrics');
     return response.data.data;
   }
 
-  async getSales(filters?: { page?: number; limit?: number; startDate?: string; endDate?: string }): Promise<SalesResponse> {
-    const response = await this.client.get<ApiResponse<SalesResponse>>('/api/sales', {
+  // Sales
+  async getSales(filters?: SaleFilters): Promise<SalesResponse> {
+    console.log('API getSales: Fetching with filters:', filters);
+    const response = await this.client.get<any>('/api/sales', {
       params: filters,
     });
-    return response.data.data;
+    
+    console.log('API getSales: Raw response:', response.data);
+    console.log('API getSales: response.data.data:', response.data.data);
+    console.log('API getSales: response.data.data?.sales:', response.data.data?.sales);
+    console.log('API getSales: response.data.data?.pagination:', response.data.data?.pagination);
+    
+    const result = {
+      sales: response.data.data?.data?.sales || [],
+      total: response.data.data?.data?.pagination?.total || 0,
+      page: response.data.data?.data?.pagination?.page || 1,
+      limit: response.data.data?.data?.pagination?.limit || 25,
+      totalPages: response.data.data?.data?.pagination?.pages || 0
+    };
+    
+    console.log('API getSales: Processed result:', result);
+    return result;
+  }
+
+  async getSale(id: string): Promise<any> {
+    const response = await this.client.get<any>(`/api/sales/${id}`);
+    return response.data.data || response.data;
+  }
+
+  async createSale(data: CreateSaleRequest): Promise<any> {
+    const response = await this.client.post<any>('/api/sales', data);
+    return response.data.data || response.data;
+  }
+
+  async updateSale(id: string, data: UpdateSaleRequest): Promise<any> {
+    const response = await this.client.put<any>(`/api/sales/${id}`, data);
+    return response.data.data || response.data;
+  }
+
+  async deleteSale(id: string): Promise<void> {
+    await this.client.delete(`/api/sales/${id}`);
+  }
+
+  async getSalesStats(): Promise<SalesStats> {
+    const response = await this.client.get<any>('/api/sales/stats');
+    return response.data.data || response.data;
+  }
+
+  async getMySales(): Promise<SalesResponse> {
+    const response = await this.client.get<any>('/api/sales/my-sales');
+    return {
+      sales: response.data.data?.data || response.data.data || response.data.sales || [],
+      total: response.data.data?.pagination?.total || response.data.pagination?.total || response.data.total || 0,
+      page: response.data.data?.pagination?.page || response.data.pagination?.page || response.data.page || 1,
+      limit: response.data.data?.pagination?.limit || response.data.pagination?.limit || response.data.limit || 25,
+      totalPages: response.data.data?.pagination?.totalPages || response.data.pagination?.totalPages || response.data.totalPages || 0
+    };
   }
 
   // Upload de imagens

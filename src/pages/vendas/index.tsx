@@ -4,6 +4,14 @@ import { formatCurrency, formatDate } from '@/utils/formatters';
 export default function SalesPage() {
   const { data: salesData, isLoading, error } = useSales({ limit: 50 });
 
+  // Debug logs
+  console.log('Sales Page Debug:');
+  console.log('- isLoading:', isLoading);
+  console.log('- error:', error);
+  console.log('- salesData:', salesData);
+  console.log('- salesData?.sales:', salesData?.sales);
+  console.log('- salesData?.sales?.length:', salesData?.sales?.length);
+
   if (isLoading) {
     return (
       <div className="space-y-6">
@@ -69,7 +77,7 @@ export default function SalesPage() {
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <ul className="divide-y divide-gray-200">
             {salesData.sales.map((sale) => (
-              <li key={sale.id}>
+              <li key={sale._id}>
                 <div className="px-4 py-4 flex items-center justify-between">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
@@ -81,7 +89,7 @@ export default function SalesPage() {
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900">
-                        {sale.vehicle.brand} {sale.vehicle.model} ({sale.vehicle.year})
+                        {sale.vehicle.brand} {sale.vehicle.vehicleModel} ({sale.vehicle.year})
                       </div>
                       <div className="text-sm text-gray-500">
                         Comprador: {sale.buyer.name} • Vendedor: {sale.seller.name}
@@ -90,7 +98,7 @@ export default function SalesPage() {
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-medium text-gray-900">
-                      {formatCurrency(sale.price)}
+                      {formatCurrency(sale.salePrice)}
                     </div>
                     <div className="text-sm text-gray-500">
                       {formatDate(sale.saleDate)}
