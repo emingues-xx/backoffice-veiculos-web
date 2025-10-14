@@ -27,7 +27,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
         <ProductionDebug />
         <ReactQueryDevtools initialIsOpen={false} />
-      </AuthProvider>
+      </AuthProvider> 
     </QueryClientProvider>
   );
 }
