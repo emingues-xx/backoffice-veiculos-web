@@ -129,6 +129,116 @@ export default function Document() {
             .mb-2 {
               margin-bottom: 0.5rem !important;
             }
+            
+            /* Additional Tailwind classes for layout */
+            .space-y-4 > * + * {
+              margin-top: 1rem !important;
+            }
+            
+            .space-y-6 > * + * {
+              margin-top: 1.5rem !important;
+            }
+            
+            .text-center {
+              text-align: center !important;
+            }
+            
+            .text-left {
+              text-align: left !important;
+            }
+            
+            .mt-4 {
+              margin-top: 1rem !important;
+            }
+            
+            .mt-6 {
+              margin-top: 1.5rem !important;
+            }
+            
+            .mb-8 {
+              margin-bottom: 2rem !important;
+            }
+            
+            .px-4 {
+              padding-left: 1rem !important;
+              padding-right: 1rem !important;
+            }
+            
+            .py-2 {
+              padding-top: 0.5rem !important;
+              padding-bottom: 0.5rem !important;
+            }
+            
+            .py-3 {
+              padding-top: 0.75rem !important;
+              padding-bottom: 0.75rem !important;
+            }
+            
+            .py-4 {
+              padding-top: 1rem !important;
+              padding-bottom: 1rem !important;
+            }
+            
+            .border {
+              border-width: 1px !important;
+            }
+            
+            .border-gray-300 {
+              border-color: #d1d5db !important;
+            }
+            
+            .focus\\:outline-none:focus {
+              outline: 2px solid transparent !important;
+              outline-offset: 2px !important;
+            }
+            
+            .focus\\:ring-2:focus {
+              --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color) !important;
+              --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color) !important;
+              box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000) !important;
+            }
+            
+            .focus\\:ring-blue-500:focus {
+              --tw-ring-opacity: 1 !important;
+              --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity)) !important;
+            }
+            
+            .focus\\:border-blue-500:focus {
+              border-color: #3b82f6 !important;
+            }
+            
+            .w-full {
+              width: 100% !important;
+            }
+            
+            .h-10 {
+              height: 2.5rem !important;
+            }
+            
+            .h-12 {
+              height: 3rem !important;
+            }
+            
+            .text-base {
+              font-size: 1rem !important;
+              line-height: 1.5rem !important;
+            }
+            
+            .leading-6 {
+              line-height: 1.5rem !important;
+            }
+            
+            .placeholder-gray-500::placeholder {
+              color: #6b7280 !important;
+            }
+            
+            .disabled\\:opacity-50:disabled {
+              opacity: 0.5 !important;
+            }
+            
+            .disabled\\:cursor-not-allowed:disabled {
+              cursor: not-allowed !important;
+            }
           `
         }} />
       </Head>
