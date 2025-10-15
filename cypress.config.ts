@@ -1,5 +1,15 @@
 import { defineConfig } from 'cypress';
 
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      login(email?: string, password?: string): Chainable<void>;
+      logout(): Chainable<void>;
+      mockApiResponse(endpoint: string, response: any): Chainable<void>;
+    }
+  }
+}
+
 export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3019',
@@ -12,7 +22,7 @@ export default defineConfig({
     defaultCommandTimeout: 10000,
     requestTimeout: 10000,
     responseTimeout: 10000,
-    setupNodeEvents(on, config) {
+    setupNodeEvents(on: any, config: any) {
       // implement node event listeners here
     },
   },

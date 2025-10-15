@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@/components/Auth/AuthProvider';
 import { usePermissions, Permission, Role } from '@/hooks/usePermissions';
 import AccessDenied from '@/pages/AccessDenied';
-import { ErrorBoundary } from './ErrorBoundary';
+import ErrorBoundary from './ErrorBoundary';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

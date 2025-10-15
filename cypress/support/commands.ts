@@ -2,6 +2,16 @@
 
 // Custom commands for testing
 
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      login(email?: string, password?: string): Chainable<void>;
+      logout(): Chainable<void>;
+      mockApiResponse(endpoint: string, response: any): Chainable<void>;
+    }
+  }
+}
+
 Cypress.Commands.add('login', (email = 'admin@backoffice.com', password = 'Admin123!@#') => {
   cy.session([email, password], () => {
     cy.visit('/');

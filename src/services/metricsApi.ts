@@ -1,4 +1,4 @@
-import { ApiClient } from '@/lib/api';
+import { apiClient } from '@/lib/api';
 import { formatDateForAPI } from '@/utils/dateValidation';
 
 export interface MetricsFilters {
@@ -62,11 +62,7 @@ export interface MetricsData {
 }
 
 class MetricsApiService {
-  private apiClient: ApiClient;
-
-  constructor() {
-    this.apiClient = new ApiClient();
-  }
+  private apiClient = apiClient;
 
   private buildQueryParams(filters: MetricsFilters): Record<string, string> {
     const params: Record<string, string> = {};
@@ -92,25 +88,25 @@ class MetricsApiService {
 
   async getRevenue(filters: MetricsFilters = {}): Promise<RevenueData> {
     const params = this.buildQueryParams(filters);
-    const response = await this.apiClient.get('/api/metrics/revenue', { params });
+    const response = await this.apiClient.request('GET', '/api/metrics/revenue', { params });
     return response.data;
   }
 
   async getSalesByDay(filters: MetricsFilters = {}): Promise<SalesByDayData> {
     const params = this.buildQueryParams(filters);
-    const response = await this.apiClient.get('/api/metrics/sales-by-day', { params });
+    const response = await this.apiClient.request('GET', '/api/metrics/sales-by-day', { params });
     return response.data;
   }
 
   async getTopSellers(filters: MetricsFilters = {}): Promise<TopSellersData> {
     const params = this.buildQueryParams(filters);
-    const response = await this.apiClient.get('/api/metrics/top-sellers', { params });
+    const response = await this.apiClient.request('GET', '/api/metrics/top-sellers', { params });
     return response.data;
   }
 
   async getTotalSales(filters: MetricsFilters = {}): Promise<TotalSalesData> {
     const params = this.buildQueryParams(filters);
-    const response = await this.apiClient.get('/api/metrics/total-sales', { params });
+    const response = await this.apiClient.request('GET', '/api/metrics/total-sales', { params });
     return response.data;
   }
 
@@ -135,7 +131,7 @@ class MetricsApiService {
     const params = this.buildQueryParams(filters);
     params.format = format;
     
-    const response = await this.apiClient.get('/api/metrics/export', { 
+    const response = await this.apiClient.request('GET', '/api/metrics/export', { 
       params,
       responseType: 'blob'
     });

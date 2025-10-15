@@ -15,7 +15,7 @@ export interface ErrorMessageProps {
   dismissible?: boolean;
 }
 
-const ErrorMessage: React.FC<ErrorMessageProps> = ({
+export const ErrorMessage: React.FC<ErrorMessageProps> = ({
   type = 'error',
   title,
   message,

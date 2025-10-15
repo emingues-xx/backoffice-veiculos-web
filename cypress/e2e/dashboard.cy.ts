@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe('Dashboard E2E Tests', () => {
   beforeEach(() => {
     // Mock da API
@@ -173,7 +175,7 @@ describe('Dashboard E2E Tests', () => {
   });
 
   it('should be responsive on mobile', () => {
-    cy.viewport('iphone-x');
+    cy.viewport(375, 812);
     cy.visit('/dashboard');
     cy.wait('@getMetrics');
     

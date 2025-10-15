@@ -24,7 +24,9 @@ export const Dashboard: React.FC = () => {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <MetricCardSkeleton count={4} />
+        {[...Array(4)].map((_, i) => (
+          <MetricCardSkeleton key={i} />
+        ))}
       </div>
     );
   }
@@ -34,8 +36,7 @@ export const Dashboard: React.FC = () => {
       <ErrorMessage
         title="Erro ao carregar dashboard"
         message="Não foi possível carregar os dados do dashboard."
-        details={error.message}
-        onRetry={refetch}
+        details={error instanceof Error ? error.message : String(error)}
       />
     );
   }
@@ -84,7 +85,7 @@ export const Dashboard: React.FC = () => {
         <MetricCard
           title="Ticket Médio"
           value={formatCurrency(
-            metrics.totalSales?.totalSales > 0 
+            metrics.totalSales?.totalSales && metrics.totalSales.totalSales > 0 
               ? (metrics.totalSales.totalRevenue / metrics.totalSales.totalSales)
               : 0
           )}

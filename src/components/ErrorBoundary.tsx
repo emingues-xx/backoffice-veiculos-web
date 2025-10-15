@@ -43,7 +43,7 @@ class ErrorBoundary extends Component<Props, State> {
 
     // Log do erro
     logError(error, {
-      componentStack: errorInfo.componentStack,
+      componentStack: errorInfo.componentStack || undefined,
       errorBoundary: 'ErrorBoundary'
     });
 

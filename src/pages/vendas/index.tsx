@@ -101,7 +101,7 @@ export default function SalesPage() {
                       {formatCurrency(sale.salePrice)}
                     </div>
                     <div className="text-sm text-gray-500">
-                      {formatDate(sale.saleDate)}
+                      {formatDate(sale.createdAt)}
                     </div>
                   </div>
                 </div>

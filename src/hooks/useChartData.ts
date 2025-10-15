@@ -96,12 +96,12 @@ export const useChartData = (options: ChartDataHookOptions): ProcessedChartData 
 
       // Processar grupos (somar valores, etc.)
       processedData = Object.entries(grouped).map(([key, items]) => {
-        const totalValue = items.reduce((sum, item) => sum + (item.value || 0), 0);
+        const totalValue = (items as any[]).reduce((sum: number, item: any) => sum + (item.value || 0), 0);
         return {
           date: key,
           value: totalValue,
           label: key,
-          count: items.length,
+          count: (items as any[]).length,
           items
         };
       });
