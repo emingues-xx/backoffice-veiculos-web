@@ -78,7 +78,7 @@ export const Dashboard: React.FC = () => {
         />
         <MetricCard
           title="Melhor Vendedor"
-          value={metrics.topSellers?.topSellers[0]?.sellerName || 'N/A'}
+          value={metrics.topSellers?.topSellers?.[0]?.sellerName || 'N/A'}
           icon={Users}
           color="purple"
         />
