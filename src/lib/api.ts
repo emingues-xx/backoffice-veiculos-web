@@ -70,11 +70,44 @@ class ApiClient {
     return response.data;
   }
 
+  // Generic request method
+  async request(method: string, url: string, config?: any): Promise<any> {
+    try {
+      const response = await this.client.request({
+        method,
+        url,
+        ...config
+      });
+      return response;
+    } catch (error) {
+      throw this.handleError(error);
+    }
+  }
+
+  // Generic get method
+  async get(url: string, config?: any): Promise<any> {
+    return this.request('GET', url, config);
+  }
+
+  // Error handler
+  private handleError(error: any): Error {
+    if (error.response) {
+      // Server responded with error status
+      return new Error(`API Error: ${error.response.status} - ${error.response.data?.message || error.response.statusText}`);
+    } else if (error.request) {
+      // Request was made but no response received
+      return new Error('Network Error: No response from server');
+    } else {
+      // Something else happened
+      return new Error(error.message || 'An unexpected error occurred');
+    }
+  }
+
   // Authentication
   async login(email: string, password: string): Promise<{ token: string; user: any }> {
     try {
       console.log('Attempting login with:', { email, password: '***' });
-      console.log('Login URL:', this.client.defaults.baseURL + '/api/users/login');
+      console.log('Login URL:', `${this.client.defaults.baseURL}/api/users/login`);
       
       // In development or localhost, use direct API for login
       const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';

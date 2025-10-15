@@ -1,9 +1,15 @@
 node_modules
 .next
 out
-build
 dist
+build
+coverage
+.nyc_output
 *.log
 .env*
 .DS_Store
-*.tsbuildinfo
+*.tgz
+*.tar.gz
+package-lock.json
+yarn.lock
+pnpm-lock.yaml

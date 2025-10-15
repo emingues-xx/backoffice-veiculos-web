@@ -13,12 +13,14 @@ export const useDashboardMetrics = () => {
         console.warn('Dashboard API not available, using mock data:', error);
         return {
           totalVehicles: 0,
-          totalSales: 0,
-          totalRevenue: 0,
           activeVehicles: 0,
-          salesByMonth: [],
+          soldVehicles: 0,
+          monthlySales: 0,
+          monthlyRevenue: 0,
+          totalRevenue: 0,
           vehiclesByCategory: [],
-          recentSales: []
+          salesByMonth: [],
+          topBrands: []
         };
       }
     },
