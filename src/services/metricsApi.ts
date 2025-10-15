@@ -89,30 +89,43 @@ class MetricsApiService {
       params.sellerId = filters.sellerId;
     }
 
+    // Se não há parâmetros, não enviar objeto vazio
+    if (Object.keys(params).length === 0) {
+      return {};
+    }
+
     return params;
   }
 
   async getRevenue(filters: MetricsFilters = {}): Promise<RevenueData> {
     const params = this.buildQueryParams(filters);
-    const response = await this.apiClient.request('GET', '/api/metrics/revenue', { params });
+    const config = Object.keys(params).length > 0 ? { params } : {};
+    const response = await this.apiClient.request('GET', '/api/metrics/revenue', config);
     return response.data;
   }
 
   async getSalesByDay(filters: MetricsFilters = {}): Promise<SalesByDayData> {
     const params = this.buildQueryParams(filters);
-    const response = await this.apiClient.request('GET', '/api/metrics/sales-by-day', { params });
+    const config = Object.keys(params).length > 0 ? { params } : {};
+    const response = await this.apiClient.request('GET', '/api/metrics/sales-by-day', config);
     return response.data;
   }
 
   async getTopSellers(filters: MetricsFilters = {}): Promise<TopSellersData> {
     const params = this.buildQueryParams(filters);
-    const response = await this.apiClient.request('GET', '/api/metrics/top-sellers', { params });
+    const config = Object.keys(params).length > 0 ? { params } : {};
+    const response = await this.apiClient.request('GET', '/api/metrics/top-sellers', config);
     return response.data;
   }
 
   async getTotalSales(filters: MetricsFilters = {}): Promise<TotalSalesData> {
     const params = this.buildQueryParams(filters);
-    const response = await this.apiClient.request('GET', '/api/metrics/total-sales', { params });
+    console.log('getTotalSales - filters:', filters);
+    console.log('getTotalSales - params:', params);
+    
+    // Se não há parâmetros, fazer requisição sem params
+    const config = Object.keys(params).length > 0 ? { params } : {};
+    const response = await this.apiClient.request('GET', '/api/metrics/total-sales', config);
     return response.data;
   }
 
