@@ -146,16 +146,15 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
         
         <div className="flex items-center">
           {hasValue && !disabled && (
-            <button
-              type="button"
+            <span
               onClick={(e) => {
                 e.stopPropagation();
                 clearSelection();
               }}
-              className="mr-2 p-1 hover:bg-gray-100 rounded"
+              className="mr-2 p-1 hover:bg-gray-100 rounded cursor-pointer"
             >
               <X className="w-3 h-3 text-gray-400" />
-            </button>
+            </span>
           )}
           <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
         </div>
