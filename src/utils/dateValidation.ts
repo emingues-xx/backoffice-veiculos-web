@@ -38,6 +38,19 @@ export const DATE_PRESETS: DatePreset[] = [
     }
   },
   {
+    label: 'Últimos 30 dias',
+    value: 'last30Days',
+    getDateRange: () => {
+      const today = new Date();
+      const last30Days = new Date(today);
+      last30Days.setDate(today.getDate() - 30);
+      return {
+        startDate: startOfDay(last30Days),
+        endDate: endOfDay(today)
+      };
+    }
+  },
+  {
     label: 'Último mês',
     value: 'lastMonth',
     getDateRange: () => {

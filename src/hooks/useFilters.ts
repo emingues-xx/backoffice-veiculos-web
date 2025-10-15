@@ -30,7 +30,7 @@ const DEFAULT_FILTERS: FilterState = {
     startDate: null,
     endDate: null
   },
-  preset: 'lastMonth',
+  preset: 'last30Days',
   sellerId: undefined,
   period: undefined,
   search: undefined
@@ -40,7 +40,7 @@ export const useFilters = (): UseFiltersReturn => {
   const router = useRouter();
   const [filters, setFilters] = useState<FilterState>(() => {
     // Inicializar com o preset padrão aplicado
-    const presetRange = getDateRangeFromPreset('lastMonth');
+    const presetRange = getDateRangeFromPreset('last30Days');
     return {
       ...DEFAULT_FILTERS,
       dateRange: presetRange || DEFAULT_FILTERS.dateRange
@@ -49,12 +49,12 @@ export const useFilters = (): UseFiltersReturn => {
 
   // Inicializar com preset padrão
   const initializeWithPreset = useCallback(() => {
-    const presetRange = getDateRangeFromPreset('lastMonth');
+    const presetRange = getDateRangeFromPreset('last30Days');
     if (presetRange) {
       setFilters(prev => ({
         ...prev,
         dateRange: presetRange,
-        preset: 'lastMonth'
+        preset: 'last30Days'
       }));
     }
   }, []);
@@ -68,7 +68,7 @@ export const useFilters = (): UseFiltersReturn => {
         startDate: query.startDate ? new Date(query.startDate as string) : null,
         endDate: query.endDate ? new Date(query.endDate as string) : null
       },
-      preset: (query.preset as string) || 'lastMonth',
+      preset: (query.preset as string) || 'last30Days',
       sellerId: query.sellerId as string || undefined,
       period: query.period as any || undefined,
       search: query.search as string || undefined
@@ -89,7 +89,7 @@ export const useFilters = (): UseFiltersReturn => {
       query.endDate = filters.dateRange.endDate.toISOString().split('T')[0];
     }
     
-    if (filters.preset && filters.preset !== 'lastMonth') {
+    if (filters.preset && filters.preset !== 'last30Days') {
       query.preset = filters.preset;
     }
     
@@ -172,7 +172,7 @@ export const useFilters = (): UseFiltersReturn => {
       filters.sellerId ||
       filters.period ||
       filters.search ||
-      (filters.preset && filters.preset !== 'lastMonth') ||
+      (filters.preset && filters.preset !== 'last30Days') ||
       (filters.dateRange.startDate && filters.dateRange.endDate)
     );
   }, [filters]);

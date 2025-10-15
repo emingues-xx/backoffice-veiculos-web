@@ -186,7 +186,7 @@ class MetricsApiService {
       ? totalSales.totalRevenue / totalSales.totalSales 
       : 0;
 
-    const topSeller = topSellers.topSellers.length > 0 
+    const topSeller = topSellers.topSellers && topSellers.topSellers.length > 0 
       ? topSellers.topSellers[0] 
       : null;
 
