@@ -111,21 +111,21 @@ class MetricsApiService {
     const params = this.buildQueryParams(filters);
     const config = Object.keys(params).length > 0 ? { params } : {};
     const response = await this.apiClient.request('GET', '/api/metrics/revenue', config);
-    return response.data;
+    return response.data.data;
   }
 
   async getSalesByDay(filters: MetricsFilters = {}): Promise<SalesByDayData> {
     const params = this.buildQueryParams(filters);
     const config = Object.keys(params).length > 0 ? { params } : {};
     const response = await this.apiClient.request('GET', '/api/metrics/sales-by-day', config);
-    return response.data;
+    return response.data.data;
   }
 
   async getTopSellers(filters: MetricsFilters = {}): Promise<TopSellersData> {
     const params = this.buildQueryParams(filters);
     const config = Object.keys(params).length > 0 ? { params } : {};
     const response = await this.apiClient.request('GET', '/api/metrics/top-sellers', config);
-    return response.data;
+    return response.data.data;
   }
 
   async getTotalSales(filters: MetricsFilters = {}): Promise<TotalSalesData> {
@@ -136,7 +136,7 @@ class MetricsApiService {
     // Se não há parâmetros, fazer requisição sem params
     const config = Object.keys(params).length > 0 ? { params } : {};
     const response = await this.apiClient.request('GET', '/api/metrics/total-sales', config);
-    return response.data;
+    return response.data.data;
   }
 
   async getAllMetrics(filters: MetricsFilters = {}): Promise<MetricsData> {
