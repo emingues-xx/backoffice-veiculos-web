@@ -27,7 +27,7 @@ export const useRevenue = (filters: MetricsFilters = {}) => {
   return useQuery({
     queryKey: METRICS_QUERY_KEYS.revenue(filters),
     queryFn: () => metricsApiService.getRevenue(filters),
-    enabled: !!user, // Só executa se usuário estiver logado
+    enabled: !!user,
     ...DEFAULT_QUERY_OPTIONS
   });
 };
@@ -138,6 +138,7 @@ export const useMetrics = (filters: MetricsFilters = {}) => {
     totalSales: totalSales.data,
     summary: summary.data
   };
+
 
   const refetch = () => {
     revenue.refetch();

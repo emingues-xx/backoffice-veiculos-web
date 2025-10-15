@@ -21,6 +21,8 @@ export const Dashboard: React.FC = () => {
   const { filters, getApiFilters } = useFilters();
   const { data: metrics, isLoading, error, refetch } = useMetrics(getApiFilters());
 
+
+
   if (isLoading) {
     return (
       <div className="space-y-6">
