@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
+// import type { Meta, StoryObj } from '@storybook/react';
 import { MetricCard } from './MetricCard';
 import { DollarSign, TrendingUp, Users, Car } from 'lucide-react';
 
-const meta: Meta<typeof MetricCard> = {
+const meta: any = {
   title: 'Dashboard/MetricCard',
   component: MetricCard,
   parameters: {
@@ -40,7 +40,7 @@ const meta: Meta<typeof MetricCard> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof MetricCard>;
+type Story = any;
 
 export const Default: Story = {
   args: {
@@ -129,7 +129,7 @@ export const Loading: Story = {
     color: 'blue',
   },
   decorators: [
-    (Story) => (
+    (Story: any) => (
       <div className="animate-pulse">
         <Story />
       </div>

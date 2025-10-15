@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
+// import type { Meta, StoryObj } from '@storybook/react';
 import { SalesChart } from './SalesChart';
 
-const meta: Meta<typeof SalesChart> = {
+const meta: any = {
   title: 'Charts/SalesChart',
   component: SalesChart,
   parameters: {
@@ -55,7 +55,7 @@ const meta: Meta<typeof SalesChart> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof SalesChart>;
+type Story = any;
 
 const sampleData = [
   { date: '2024-01-01', value: 1000, count: 5 },
@@ -103,7 +103,7 @@ export const WithTypeToggle: Story = {
     data: sampleData,
     type: 'line',
     height: 300,
-    onTypeChange: (type) => console.log('Chart type changed to:', type),
+    onTypeChange: (type: any) => console.log('Chart type changed to:', type),
   },
 };
 
@@ -183,7 +183,7 @@ export const Responsive: Story = {
     showTooltip: true,
   },
   decorators: [
-    (Story) => (
+    (Story: any) => (
       <div className="w-full max-w-4xl">
         <Story />
       </div>
