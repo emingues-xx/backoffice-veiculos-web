@@ -114,7 +114,7 @@ export const VehicleForm: React.FC<VehicleFormProps> = ({
       category: vehicleData.category,
       condition: vehicleData.condition,
       description: vehicleData.description,
-      images: images,
+      images,
       location: vehicleData.location,
       seller: vehicleData.seller,
       isFeatured: vehicleData.isFeatured,

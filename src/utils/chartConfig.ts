@@ -1,3 +1,4 @@
+import React from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -141,14 +142,21 @@ export const getResponsiveConfig = (isMobile: boolean): ChartConfig => {
   return isMobile ? MOBILE_CHART_CONFIG : DEFAULT_CHART_CONFIG;
 };
 
-export const generateGradientDefs = (id: string, color: string): JSX.Element => (
-  <defs>
-    <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-      <stop offset="5%" stopColor={color} stopOpacity={0.3}/>
-      <stop offset="95%" stopColor={color} stopOpacity={0.1}/>
-    </linearGradient>
-  </defs>
-);
+export const generateGradientDefs = (id: string, color: string) => {
+  return {
+    id,
+    color,
+    type: 'linearGradient',
+    x1: '0',
+    y1: '0',
+    x2: '0',
+    y2: '1',
+    stops: [
+      { offset: '5%', stopColor: color, stopOpacity: 0.3 },
+      { offset: '95%', stopColor: color, stopOpacity: 0.1 }
+    ]
+  };
+};
 
 export const getChartColors = (index: number): string[] => {
   const colorPalettes = [
@@ -181,18 +189,12 @@ export const getAnimationProps = (isVisible: boolean) => ({
 export const createCustomTooltip = (labelFormatter?: (label: string) => string) => {
   return ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
-      return (
-        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-medium text-gray-900">
-            {labelFormatter ? labelFormatter(label) : formatTooltipLabel(label)}
-          </p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }} className="text-sm">
-              {`${entry.name}: ${formatTooltipValue(entry.value, entry.name)[0]}`}
-            </p>
-          ))}
-        </div>
-      );
+      return {
+        active,
+        payload,
+        label,
+        labelFormatter
+      };
     }
     return null;
   };
@@ -202,17 +204,11 @@ export const createCustomLabel = (formatter?: (value: number) => string) => {
   return ({ x, y, value }: any) => {
     if (value === 0) return null;
     
-    return (
-      <text
-        x={x}
-        y={y - 5}
-        fill="#374151"
-        textAnchor="middle"
-        fontSize="12"
-        fontWeight="500"
-      >
-        {formatter ? formatter(value) : formatYAxisLabel(value)}
-      </text>
-    );
+    return {
+      x,
+      y: y - 5,
+      value,
+      formatter
+    };
   };
 };

@@ -243,3 +243,84 @@ export const formatPercentageChange = (current: number, previous: number): {
     isNeutral
   };
 };
+
+// Funções específicas para veículos
+
+/**
+ * Retorna a cor do status do veículo
+ */
+export const getStatusColor = (status: string): string => {
+  const statusColors: Record<string, string> = {
+    active: 'green',
+    inactive: 'gray',
+    sold: 'blue',
+    reserved: 'yellow',
+    maintenance: 'red',
+    pending: 'orange'
+  };
+  
+  return statusColors[status] || 'gray';
+};
+
+/**
+ * Retorna o label do status do veículo
+ */
+export const getStatusLabel = (status: string): string => {
+  const statusLabels: Record<string, string> = {
+    active: 'Ativo',
+    inactive: 'Inativo',
+    sold: 'Vendido',
+    reserved: 'Reservado',
+    maintenance: 'Manutenção',
+    pending: 'Pendente'
+  };
+  
+  return statusLabels[status] || 'Desconhecido';
+};
+
+/**
+ * Retorna o label do tipo de combustível
+ */
+export const getFuelLabel = (fuelType: string): string => {
+  const fuelLabels: Record<string, string> = {
+    gasoline: 'Gasolina',
+    ethanol: 'Etanol',
+    diesel: 'Diesel',
+    electric: 'Elétrico',
+    hybrid: 'Híbrido',
+    flex: 'Flex'
+  };
+  
+  return fuelLabels[fuelType] || 'Desconhecido';
+};
+
+/**
+ * Retorna o label do tipo de transmissão
+ */
+export const getTransmissionLabel = (transmission: string): string => {
+  const transmissionLabels: Record<string, string> = {
+    manual: 'Manual',
+    automatic: 'Automático',
+    semi_automatic: 'Semi-automático',
+    cvt: 'CVT'
+  };
+  
+  return transmissionLabels[transmission] || 'Desconhecido';
+};
+
+/**
+ * Retorna o label da categoria do veículo
+ */
+export const getCategoryLabel = (category: string): string => {
+  const categoryLabels: Record<string, string> = {
+    car: 'Carro',
+    motorcycle: 'Moto',
+    truck: 'Caminhão',
+    van: 'Van',
+    suv: 'SUV',
+    pickup: 'Pickup',
+    bus: 'Ônibus'
+  };
+  
+  return categoryLabels[category] || 'Desconhecido';
+};

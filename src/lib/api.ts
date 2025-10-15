@@ -74,7 +74,7 @@ class ApiClient {
   async login(email: string, password: string): Promise<{ token: string; user: any }> {
     try {
       console.log('Attempting login with:', { email, password: '***' });
-      console.log('Login URL:', this.client.defaults.baseURL + '/api/users/login');
+      console.log('Login URL:', `${this.client.defaults.baseURL}/api/users/login`);
       
       // In development or localhost, use direct API for login
       const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
