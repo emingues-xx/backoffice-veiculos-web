@@ -38,7 +38,14 @@ const DEFAULT_FILTERS: FilterState = {
 
 export const useFilters = (): UseFiltersReturn => {
   const router = useRouter();
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
+  const [filters, setFilters] = useState<FilterState>(() => {
+    // Inicializar com o preset padrão aplicado
+    const presetRange = getDateRangeFromPreset('lastMonth');
+    return {
+      ...DEFAULT_FILTERS,
+      dateRange: presetRange || DEFAULT_FILTERS.dateRange
+    };
+  });
 
   // Inicializar com preset padrão
   const initializeWithPreset = useCallback(() => {

@@ -68,18 +68,24 @@ class MetricsApiService {
     const params: Record<string, string> = {};
 
     if (filters.startDate) {
-      params.startDate = formatDateForAPI(filters.startDate) || '';
+      const formattedDate = formatDateForAPI(filters.startDate);
+      if (formattedDate) {
+        params.startDate = formattedDate;
+      }
     }
 
     if (filters.endDate) {
-      params.endDate = formatDateForAPI(filters.endDate) || '';
+      const formattedDate = formatDateForAPI(filters.endDate);
+      if (formattedDate) {
+        params.endDate = formattedDate;
+      }
     }
 
-    if (filters.period) {
+    if (filters.period && filters.period.trim()) {
       params.period = filters.period;
     }
 
-    if (filters.sellerId) {
+    if (filters.sellerId && filters.sellerId.trim()) {
       params.sellerId = filters.sellerId;
     }
 
