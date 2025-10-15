@@ -2,12 +2,14 @@
 
 // Custom commands for testing
 
+export {};
+
 declare global {
   namespace Cypress {
     interface Chainable {
-      login(email?: string, password?: string): Chainable<void>;
-      logout(): Chainable<void>;
-      mockApiResponse(endpoint: string, response: any): Chainable<void>;
+      login(email?: string, password?: string): Chainable;
+      logout(): Chainable;
+      mockApiResponse(endpoint: string, response: any): Chainable;
     }
   }
 }
