@@ -68,16 +68,26 @@ class MetricsApiService {
     const params: Record<string, string> = {};
 
     if (filters.startDate) {
-      const formattedDate = formatDateForAPI(filters.startDate);
-      if (formattedDate) {
-        params.startDate = formattedDate;
+      // Se for string, usar diretamente; se for Date, formatar
+      if (typeof filters.startDate === 'string') {
+        params.startDate = filters.startDate;
+      } else {
+        const formattedDate = formatDateForAPI(filters.startDate);
+        if (formattedDate) {
+          params.startDate = formattedDate;
+        }
       }
     }
 
     if (filters.endDate) {
-      const formattedDate = formatDateForAPI(filters.endDate);
-      if (formattedDate) {
-        params.endDate = formattedDate;
+      // Se for string, usar diretamente; se for Date, formatar
+      if (typeof filters.endDate === 'string') {
+        params.endDate = filters.endDate;
+      } else {
+        const formattedDate = formatDateForAPI(filters.endDate);
+        if (formattedDate) {
+          params.endDate = formattedDate;
+        }
       }
     }
 
